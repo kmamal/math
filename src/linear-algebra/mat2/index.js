@@ -1,3 +1,5 @@
+/* eslint-disable array-element-newline */
+
 const { array: { swap } } = require('@xyz/util')
 
 const M11 = 0
@@ -5,7 +7,7 @@ const M21 = 1
 const M12 = 2
 const M22 = 3
 
-const makeMatrix = (Domain) => {
+const defineFor = (Domain) => {
 	const {
 		isFinite: _isFinite,
 		isNaN: _isNaN,
@@ -17,128 +19,229 @@ const makeMatrix = (Domain) => {
 		neq: _neq,
 	} = Domain
 
-	const isFinite = ([ m11, m21, m12, m22 ]) => true
-		&& _isFinite(m11)
-		&& _isFinite(m21)
-		&& _isFinite(m12)
-		&& _isFinite(m22)
+	const isFinite = ([
+		m11, m21,
+		m12, m22,
+	]) => true
+		&& _isFinite(m11) && _isFinite(m21)
+		&& _isFinite(m12) && _isFinite(m22)
 
-	const isNaN = ([ m11, m21, m12, m22 ]) => false
-		|| _isNaN(m11)
-		|| _isNaN(m21)
-		|| _isNaN(m12)
-		|| _isNaN(m22)
+	const isNaN = ([
+		m11, m21,
+		m12, m22,
+	]) => false
+		|| _isNaN(m11) || _isNaN(m21)
+		|| _isNaN(m12) || _isNaN(m22)
 
-	const neg = ([ m11, m21, m12, m22 ]) => [
-		_neg(m11),
-		_neg(m21),
-		_neg(m12),
-		_neg(m22),
+	const neg = ([
+		m11, m21,
+		m12, m22,
+	]) => [
+		_neg(m11), _neg(m21),
+		_neg(m12), _neg(m22),
 	]
+
 	const neg$$$ = (m) => {
-		const [ m11, m21, m12, m22 ] = m
+		const [
+			m11, m21,
+			m12, m22,
+		] = m
+
 		m[M11] = _neg(m11)
 		m[M21] = _neg(m21)
+
 		m[M12] = _neg(m12)
 		m[M22] = _neg(m22)
+
 		return m
 	}
 	neg.$$$ = neg$$$
 
-	const add = ([ a11, a21, a12, a22 ], [ b11, b21, b12, b22 ]) => [
-		_add(a11, b11),
-		_add(a21, b21),
-		_add(a12, b12),
-		_add(a22, b22),
+	const add = (
+		[
+			a11, a21,
+			a12, a22,
+		],
+		[
+			b11, b21,
+			b12, b22,
+		],
+	) => [
+		_add(a11, b11), _add(a21, b21),
+		_add(a12, b12), _add(a22, b22),
 	]
-	const add$$$ = (a, [ b11, b21, b12, b22 ]) => {
-		const [ a11, a21, a12, a22 ] = a
+
+	const add$$$ = (a, [
+		b11, b21,
+		b12, b22,
+	]) => {
+		const [
+			a11, a21,
+			a12, a22,
+		] = a
+
 		a[M11] = _add(a11, b11)
 		a[M21] = _add(a21, b21)
+
 		a[M12] = _add(a12, b12)
 		a[M22] = _add(a22, b22)
+
 		return a
 	}
 	add.$$$ = add$$$
 
-	const sub = ([ a11, a21, a12, a22 ], [ b11, b21, b12, b22 ]) => [
-		_sub(a11, b11),
-		_sub(a21, b21),
-		_sub(a12, b12),
-		_sub(a22, b22),
+	const sub = (
+		[
+			a11, a21,
+			a12, a22,
+		],
+		[
+			b11, b21,
+			b12, b22,
+		],
+	) => [
+		_sub(a11, b11), _sub(a21, b21),
+		_sub(a12, b12), _sub(a22, b22),
 	]
-	const sub$$$ = (a, [ b11, b21, b12, b22 ]) => {
-		const [ a11, a21, a12, a22 ] = a
+
+	const sub$$$ = (a, [
+		b11, b21,
+		b12, b22,
+	]) => {
+		const [
+			a11, a21,
+			a12, a22,
+		] = a
+
 		a[M11] = _sub(a11, b11)
 		a[M21] = _sub(a21, b21)
+
 		a[M12] = _sub(a12, b12)
 		a[M22] = _sub(a22, b22)
+
 		return a
 	}
 	sub.$$$ = sub$$$
 
-	const mul = ([ a11, a21, a12, a22 ], [ b11, b21, b12, b22 ]) => [
+	const mul = ([
+		a11, a21,
+		a12, a22,
+	], [
+		b11, b21,
+		b12, b22,
+	]) => [
 		_add(_mul(a11, b11), _mul(a21, b12)),
 		_add(_mul(a11, b21), _mul(a21, b22)),
+
 		_add(_mul(a12, b11), _mul(a22, b12)),
 		_add(_mul(a12, b21), _mul(a22, b22)),
 	]
-	const mul$$$ = (a, [ b11, b21, b12, b22 ]) => {
-		const [ a11, a21, a12, a22 ] = a
+
+	const mul$$$ = (a, [
+		b11, b21,
+		b12, b22,
+	]) => {
+		const [
+			a11, a21,
+			a12, a22,
+		] = a
+
 		a[M11] = _add(_mul(a11, b11), _mul(a21, b12))
 		a[M21] = _add(_mul(a11, b21), _mul(a21, b22))
+
 		a[M12] = _add(_mul(a12, b11), _mul(a22, b12))
 		a[M22] = _add(_mul(a12, b21), _mul(a22, b22))
+
 		return a
 	}
 	mul.$$$ = mul$$$
 
-	const transpose = ([ m11, m21, m12, m22 ]) => [
-		m11,
-		m12,
-		m21,
-		m22,
+	const transpose = ([
+		m11, m21,
+		m12, m22,
+	]) => [
+		m11, m12,
+		m21, m22,
 	]
+
 	const transpose$$$ = (m) => {
 		swap.$$$(m, M12, M21)
+
 		return m
 	}
 	transpose.$$$ = transpose$$$
 
-	const eq = ([ a11, a21, a12, a22 ], [ b11, b21, b12, b22 ]) => true
-		&& _eq(a11, b11)
-		&& _eq(a21, b21)
-		&& _eq(a12, b12)
-		&& _eq(a22, b22)
-
-	const neq = ([ a11, a21, a12, a22 ], [ b11, b21, b12, b22 ]) => false
-		|| _neq(a11, b11)
-		|| _neq(a21, b21)
-		|| _neq(a12, b12)
-		|| _neq(a22, b22)
-
-	const scale = ([ m11, m21, m12, m22 ], v) => [
-		_mul(m11, v),
-		_mul(m21, v),
-		_mul(m12, v),
-		_mul(m22, v),
+	const mul_vector = ([
+		a11, a21,
+		a12, a22,
+	], [ v1, v2 ]) => [
+		_add(_mul(a11, v1), _mul(a21, v2)),
+		_add(_mul(a12, v1), _mul(a22, v2)),
 	]
+
+	const mul_vector$$$ = ([
+		a11, a21,
+		a12, a22,
+	], v) => {
+		const [ v1, v2 ] = v
+
+		v[0] = _add(_mul(a11, v1), _mul(a21, v2))
+		v[1] = _add(_mul(a12, v1), _mul(a22, v2))
+
+		return v
+	}
+	mul_vector.$$$ = mul_vector$$$
+
+	const eq = ([
+		a11, a21,
+		a12, a22,
+	], [
+		b11, b21,
+		b12, b22,
+	]) => true
+		&& _eq(a11, b11) && _eq(a21, b21)
+		&& _eq(a12, b12) && _eq(a22, b22)
+
+	const neq = ([
+		a11, a21,
+		a12, a22,
+	], [
+		b11, b21,
+		b12, b22,
+	]) => false
+		|| _neq(a11, b11) || _neq(a21, b21)
+		|| _neq(a12, b12) || _neq(a22, b22)
+
+	const scale = ([
+		m11, m21,
+		m12, m22,
+	], v) => [
+		_mul(m11, v), _mul(m21, v),
+		_mul(m12, v), _mul(m22, v),
+	]
+
 	const scale$$$ = (m, v) => {
-		const [ m11, m21, m12, m22 ] = m
+		const [
+			m11, m21,
+			m12, m22,
+		] = m
+
 		m[M11] = _mul(m11, v)
 		m[M21] = _mul(m21, v)
+
 		m[M12] = _mul(m12, v)
 		m[M22] = _mul(m22, v)
+
 		return m
 	}
 	scale.$$$ = scale$$$
 
 	return {
 		...{ isFinite, isNaN },
-		...{ neg, add, sub, mul, transpose },
+		...{ neg, add, sub, mul, transpose, mul_vector },
 		...{ eq, neq },
 		...{ scale },
 	}
 }
 
-module.exports = { makeMatrix }
+module.exports = { defineFor }

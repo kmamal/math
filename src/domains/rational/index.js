@@ -1,7 +1,7 @@
 const M = require('../number')
 const I = require('../integer')
-const { makeGcd } = require('../../gcd')
-const gcd = makeGcd(I)
+const { defineFor } = require('../../gcd')
+const gcd = defineFor(I)
 const { 'ieee-float': Float } = require('@xyz/util')
 
 const P_INFINITY = { num: 1n, den: 0n }

@@ -1,5 +1,5 @@
 
-const makeGcd = (Domain) => {
+const defineFor = (Domain) => {
 	const { gt, mod } = Domain
 	const zero = Domain.fromNumber(0)
 
@@ -17,4 +17,4 @@ const makeGcd = (Domain) => {
 	}
 }
 
-module.exports = { makeGcd }
+module.exports = { defineFor }

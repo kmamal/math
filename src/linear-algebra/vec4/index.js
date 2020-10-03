@@ -4,7 +4,7 @@ const Y = 1
 const Z = 2
 const W = 3
 
-const makeVector = (Domain) => {
+const defineFor = (Domain) => {
 	const {
 		isFinite: _isFinite,
 		isNaN: _isNaN,
@@ -128,4 +128,4 @@ const makeVector = (Domain) => {
 	}
 }
 
-module.exports = { makeVector }
+module.exports = { defineFor }
