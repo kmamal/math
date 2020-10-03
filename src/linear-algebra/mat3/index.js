@@ -1,4 +1,4 @@
-const { swap } = require('../../../array/swap')
+const { array: { swap } } = require('@xyz/util')
 
 const M11 = 0
 const M21 = 1

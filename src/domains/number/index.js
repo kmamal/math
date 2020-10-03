@@ -3,7 +3,7 @@ const {
 		arithmetic: arithmeticOrerators,
 		comparison: comparisonOrerators,
 	},
-} = require('@xyz/utils')
+} = require('@xyz/util')
 
 const isNaN = (a) => Number.isNaN(a)
 const isFinite = (a) => Number.isFinite(a)
