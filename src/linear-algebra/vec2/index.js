@@ -65,6 +65,11 @@ const defineFor = (Domain) => {
 		_mul(ay, by),
 	)
 
+	const cross = ([ ax, ay ], [ bx, by ]) => _sub(
+		_mul(ax, by),
+		_mul(ay, bx),
+	)
+
 	const eq = ([ ax, ay ], [ bx, by ]) => true
 		&& _eq(ax, bx)
 		&& _eq(ay, by)
@@ -94,7 +99,7 @@ const defineFor = (Domain) => {
 
 	return {
 		...{ isFinite, isNaN },
-		...{ neg, add, sub, dot },
+		...{ neg, add, sub, dot, cross },
 		...{ eq, neq },
 		...{ scale, norm, normSquared, normalize },
 	}
