@@ -1,9 +1,4 @@
-const {
-	array: {
-		every,
-		map,
-	},
-} = require('@xyz/utils')
+const { every, map } = require('@xyz/utils/array')
 
 const makeVector = (Domain) => {
 	const {

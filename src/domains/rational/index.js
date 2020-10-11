@@ -1,8 +1,10 @@
-const M = require('../number')
 const I = require('../integer')
 const { defineFor } = require('../../gcd')
 const gcd = defineFor(I)
-const { 'ieee-float': Float } = require('@xyz/util')
+const Float = require('@xyz/util/ieee-float')
+
+const TWO_POW_53 = 2 ** 53
+const BIG_TWO_POW_52 = 1n << 52n
 
 const P_INFINITY = { num: 1n, den: 0n }
 const N_INFINITY = { num: -1n, den: 0n }
@@ -19,21 +21,35 @@ const abs = (x) => ({
 })
 
 const neg = (x) => ({
-	num: I.mul(-1n, x.num),
+	num: -1n * x.num,
 	den: x.den,
 })
 
 const add = (a, b) => {
-	const num = I.add(I.mul(a.num, b.den), I.mul(b.num, a.den))
-	const den = I.mul(a.den, b.den)
+	if (a === P_INFINITY && b === P_INFINITY) { return P_INFINITY }
+	if (a === N_INFINITY && b === N_INFINITY) { return N_INFINITY }
+	const num = a.num * b.den + b.num * a.den
+	const den = a.den * b.den
 	return fromFraction(num, den)
 }
 
-const sub = (a, b) => add(a, neg(b))
+const sub = (a, b) => {
+	if (a === P_INFINITY && b === N_INFINITY) { return P_INFINITY }
+	if (a === N_INFINITY && b === P_INFINITY) { return N_INFINITY }
+	const num = a.num * b.den - b.num * a.den
+	const den = a.den * b.den
+	return fromFraction(num, den)
+}
 
 const mul = (a, b) => {
-	const num = I.mul(a.num, b.num)
-	const den = I.mul(a.den, b.den)
+	const num = a.num * b.num
+	const den = a.den * b.den
+	return fromFraction(num, den)
+}
+
+const div = (a, b) => {
+	const num = a.num * b.den
+	const den = a.den * b.num
 	return fromFraction(num, den)
 }
 
@@ -42,111 +58,129 @@ const inverse = (x) => ({
 	den: x.num,
 })
 
-const div = (a, b) => mul(a, inverse(b))
-
 const mod = (a, b) => {
-	const num = I.mod(I.mul(a.num, b.den), I.mul(b.num, a.den))
-	const den = I.mul(a.den, b.den)
+	const num = I.mod(a.num * b.den, b.num * a.den)
+	const den = a.den * b.den
 	return fromFraction(num, den)
 }
 
 const square = (x) => mul(x, x)
 
-const pow = (x, e) => ({
-	num: x.num ** e,
-	den: x.den ** e,
-})
+const pow = (x, e) => { // TODO: DOESNT WORK FOR NON-INTERGER EXPONENTS
+	const num = I.pow(x.num, e)
+	const den = I.pow(x.den, e)
+	return fromFraction(num, den)
+}
 
 const floor = (x) => {
-	const y = I.div(x.num, x.den)
-	return fromInteger(y)
+	const whole = I.div(x.num, x.den)
+	return fromInteger(whole)
 }
 
 const frac = (x) => {
-	const y = I.mod(x.num, x.den)
-	const z = fromFraction(y, x.den)
-	return isFinite(z) ? z : NAN
+	const rest = I.mod(x.num, x.den)
+	const fractional = fromFraction(rest, x.den)
+	return isFinite(fractional) ? fractional : NAN
 }
 
 const eq = (a, b) => true
   && !isNaN(a)
   && !isNaN(b)
-  && I.eq(a.num, b.num)
-	&& I.eq(a.den, b.den)
+  && a.num === b.num
+	&& a.den === b.den
 
 const neq = (a, b) => !eq(a, b)
 
 const lt = (a, b) => {
-	const a_value = I.mul(a.num, b.den)
-	const b_value = I.mul(b.num, a.den)
-	return I.lt(a_value, b_value)
+	if (a === N_INFINITY && b === P_INFINITY) { return true }
+	const a_value = a.num * b.den
+	const b_value = b.num * a.den
+	return a_value < b_value
 }
 
 const gt = (a, b) => lt(b, a)
 const lte = (a, b) => lt(a, b) || eq(a, b)
 const gte = (a, b) => lte(b, a)
 
-const fromFraction = (_num, _den) => {
-	const num = I.fromNumber(_num)
-	const den = I.fromNumber(_den)
+const _simplify = (num, den) => {
+	const sign_num = num < 0 ? -1n : 1n
+	const sign_den = den < 0 ? -1n : 1n
+	const s = sign_num * sign_den
+	const abs_num = sign_num * num
+	const abs_den = sign_den * den
+	const factor = gcd(abs_num, abs_den)
+	return {
+		num: s * abs_num / factor,
+		den: abs_den / factor,
+	}
+}
 
+const fromFraction = (num, den) => {
 	const ratio = I.div(num, den)
 	if (I.isNaN(ratio)) { return NAN }
 
 	if (!I.isFinite(ratio)) {
-		return { num: I.sign(ratio), den: 0n }
+		return ratio < 0n ? N_INFINITY : P_INFINITY
 	}
 
-	const s = I.sign(num) * I.sign(den)
-	const abs_num = I.abs(num)
-	const abs_den = I.abs(den)
-	const factor = gcd(abs_num, abs_den)
-	return {
-		num: I.mul(s, I.div(abs_num, factor)),
-		den: I.div(abs_den, factor),
-	}
+	return _simplify(num, den)
 }
 
 const fromInteger = (x) => fromFraction(x, 1n)
 
 const fromNumber = (x) => {
-	if (x === M.PInfinity) { return P_INFINITY }
-	if (x === M.NInfinity) { return N_INFINITY }
-	if (M.isNaN(x)) { return NAN }
+	if (Number.isNaN(x)) { return NAN }
+	if (x === Infinity) { return P_INFINITY }
+	if (x === -Infinity) { return N_INFINITY }
 
 	const { sign: s, exponent: e, mantissa: m } = Float.parse(x)
-	const exponent = BigInt(e)
+	const biased_exponent = BigInt(e - 1075)
 	const mantissa = BigInt(m)
-	const hidden = e === 0 ? 0n : 1n
-	const [ num_scale, den_scale ] = e >= 1023
-		? [ 2n ** (exponent - 1022n), 1n ]
-		: [ 1n, 2n ** (1022n - exponent) ]
-	const num = (s ? -1n : 1n) * (hidden * 2n ** 52n + mantissa)
-	const den = 2n ** 53n
-	return fromFraction(num * num_scale, den * den_scale)
+
+	const implicit_bit = e === 0 ? 0n : BIG_TWO_POW_52
+	let num = (s ? -1n : 1n) * (implicit_bit + mantissa)
+	let den = 1n
+	if (e >= 1076) {
+		num <<= biased_exponent
+	} else {
+		den <<= -biased_exponent
+	}
+
+	return _simplify(num, den)
 }
 
 const toNumber = (x) => {
-	const ratio = I.div(x.num, x.den)
-	const tail = I.mod(x.num, x.den)
-	return Number(ratio) + Number(tail) / Number(x.den)
+	if (x === NAN) { return NaN }
+	if (x === P_INFINITY) { return Infinity }
+	if (x === N_INFINITY) { return -Infinity }
+
+	const { num, den } = x
+	const s = num < 0n ? -1 : 1n
+	const abs_num = s * num
+	const over_one = abs_num > den
+	const digits = over_one
+		? (abs_num << 53n) / den
+		: (den << 53n) / abs_num
+	const whole = digits >> 53n
+	const rest = digits - (whole << 53n)
+	const number = Number(s) * (Number(whole) + Number(rest) / TWO_POW_53)
+	return over_one ? number : 1 / number
 }
 
 const fromString = (s) => {
-	const match = s.match(/(?<minus-)?(?<num>\d+)\/(?<den>\d+)/u)
+	const match = s.match(/^(?<num>-?\d+)\/(?<den>\d+)$/u)
 	if (!match) { return NAN }
 
-	const { minus, num, den } = match
-	const _sign = minus === '-' ? -1 : 1
-	const _num = _sign * parseInt(num, 10)
-	const _den = parseInt(den, 10)
+	const { num, den } = match.groups
+	const _num = BigInt(num)
+	const _den = BigInt(den)
 	return fromFraction(_num, _den)
 }
 
 const toString = (x) => {
-	if (eq(x, P_INFINITY)) { return 'Infinity' }
-	if (eq(x, N_INFINITY)) { return '-Infinity' }
-	if (eq(x, NAN)) { return 'NaN' }
+	if (x === NAN) { return 'NaN' }
+	if (x === P_INFINITY) { return 'Infinity' }
+	if (x === N_INFINITY) { return '-Infinity' }
 	return `${x.num}/${x.den}`
 }
 

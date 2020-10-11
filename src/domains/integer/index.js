@@ -1,5 +1,3 @@
-const M = require('../number')
-
 const P_INFINITY = Symbol("Infinity")
 const N_INFINITY = Symbol("-Infinity")
 const NAN = Symbol("NaN")
@@ -151,16 +149,16 @@ const toString = (x) => {
 }
 
 const fromNumber = (v) => {
-	if (v === M.PInfinity) { return P_INFINITY }
-	if (v === M.NInfinity) { return N_INFINITY }
-	if (M.isNaN(v)) { return NAN }
+	if (v === Infinity) { return P_INFINITY }
+	if (v === -Infinity) { return N_INFINITY }
+	if (Number.isNaN(v)) { return NAN }
 	return BigInt(v)
 }
 
 const toNumber = (x) => {
-	if (x === P_INFINITY) { return M.PInfinity }
-	if (x === N_INFINITY) { return M.NInfinity }
-	if (x === NAN) { return M.NaN }
+	if (x === P_INFINITY) { return Infinity }
+	if (x === N_INFINITY) { return -Infinity }
+	if (x === NAN) { return NaN }
 	return Number(x)
 }
 

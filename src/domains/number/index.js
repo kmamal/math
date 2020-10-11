@@ -1,14 +1,11 @@
-const {
-	operators: {
-		arithmetic: arithmeticOrerators,
-		comparison: comparisonOrerators,
-	},
-} = require('@xyz/util')
+const arithmeticOrerators = require('@xyz/util/operators/arithmetic')
+const comparisonOrerators = require('@xyz/util/operators/comparison')
 
 const isNaN = (a) => Number.isNaN(a)
 const isFinite = (a) => Number.isFinite(a)
 
 const square = (a) => a * a
+const inverseSqrt = (a) => 1 / Math.sqrt(a)
 
 const props = Object.getOwnPropertyNames(Math)
 const M = {}
@@ -26,7 +23,7 @@ module.exports = {
 	...{ PInfinity: Infinity, NInfinity: -Infinity, NaN },
 	...{ isNaN, isFinite },
 	...arithmeticOrerators,
-	square,
+	...{ square, inverseSqrt },
 	...M,
 	...comparisonOrerators,
 	...{ fromNumber, toNumber },

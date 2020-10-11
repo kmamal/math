@@ -1,6 +1,6 @@
 /* eslint-disable array-element-newline */
 
-const { array: { swap } } = require('@xyz/util')
+const { swap } = require('@xyz/util/array')
 
 const M11 = 0
 const M21 = 1

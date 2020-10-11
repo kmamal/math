@@ -9,14 +9,14 @@ const defineFor = (Domain) => {
 		isFinite: _isFinite,
 		isNaN: _isNaN,
 		neg: _neg,
+		abs: _abs,
 		add: _add,
 		sub: _sub,
 		mul: _mul,
-		pow: _pow,
 		eq: _eq,
 		neq: _neq,
+		sqrt: _sqrt,
 	} = Domain
-	const half = Domain.fromNumber(0.5)
 
 	const isFinite = ([ x, y, z, w ]) => true
 		&& _isFinite(x)
@@ -45,6 +45,22 @@ const defineFor = (Domain) => {
 		return a
 	}
 	neg.$$$ = neg$$$
+
+	const abs = ([ x, y, z, w ]) => [
+		_abs(x),
+		_abs(y),
+		_abs(z),
+		_abs(w),
+	]
+	const abs$$$ = (a) => {
+		const [ x, y, z, w ] = a
+		a[X] = _abs(x)
+		a[Y] = _abs(y)
+		a[Z] = _abs(z)
+		a[W] = _abs(w)
+		return a
+	}
+	abs.$$$ = abs$$$
 
 	const add = ([ ax, ay, az, aw ], [ bx, by, bz, bw ]) => [
 		_add(ax, bx),
@@ -114,7 +130,7 @@ const defineFor = (Domain) => {
 	scale.$$$ = scale$$$
 
 	const normSquared = (x) => dot(x, x)
-	const norm = (x) => _pow(normSquared(x), half)
+	const norm = (x) => _sqrt(normSquared(x))
 
 	const normalize = (x) => scale(x, norm(x))
 	const normalize$$$ = (x) => scale$$$(x, norm(x))
@@ -122,7 +138,7 @@ const defineFor = (Domain) => {
 
 	return {
 		...{ isFinite, isNaN },
-		...{ neg, add, sub, dot },
+		...{ neg, abs, add, sub, dot },
 		...{ eq, neq },
 		...{ scale, norm, normSquared, normalize },
 	}
