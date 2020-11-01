@@ -12,9 +12,14 @@ const defineFor = (Domain) => {
 		add: _add,
 		sub: _sub,
 		mul: _mul,
+		div: _div,
+		inverse: _inverse,
 		eq: _eq,
 		neq: _neq,
 		sqrt: _sqrt,
+		acos: _acos,
+		max: _max,
+		min: _min,
 	} = Domain
 
 	const isFinite = ([ x, y, z ]) => true
@@ -84,8 +89,10 @@ const defineFor = (Domain) => {
 	sub.$$$ = sub$$$
 
 	const dot = ([ ax, ay, az ], [ bx, by, bz ]) => _add(
-		_mul(ax, bx),
-		_mul(ay, by),
+		_add(
+			_mul(ax, bx),
+			_mul(ay, by),
+		),
 		_mul(az, bz),
 	)
 
@@ -94,6 +101,11 @@ const defineFor = (Domain) => {
 		_sub(_mul(az, bx), _mul(ax, bz)),
 		_sub(_mul(ax, by), _mul(ay, bx)),
 	]
+
+	const angle = (a, b) => _acos(_max(-1, _min(1, _div(
+		dot(a, b),
+		_mul(norm(a), norm(b)),
+	))))
 
 	const eq = ([ ax, ay, az ], [ bx, by, bz ]) => true
 		&& _eq(ax, bx)
@@ -122,13 +134,13 @@ const defineFor = (Domain) => {
 	const normSquared = (x) => dot(x, x)
 	const norm = (x) => _sqrt(normSquared(x))
 
-	const normalize = (x) => scale(x, norm(x))
-	const normalize$$$ = (x) => scale$$$(x, norm(x))
+	const normalize = (x) => scale(x, _inverse(norm(x)))
+	const normalize$$$ = (x) => scale$$$(x, _inverse(norm(x)))
 	normalize.$$$ = normalize$$$
 
 	return {
 		...{ isFinite, isNaN },
-		...{ neg, add, sub, dot, cross },
+		...{ neg, abs, add, sub, dot, cross, angle },
 		...{ eq, neq },
 		...{ scale, norm, normSquared, normalize },
 	}

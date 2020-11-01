@@ -15,6 +15,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    "@xyz/testing": "git:repos/testing#semver:*",
     "@xyz/util": "git:repos/util#semver:*"
   }
 }

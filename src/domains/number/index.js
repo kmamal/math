@@ -4,6 +4,7 @@ const comparisonOrerators = require('@xyz/util/operators/comparison')
 const isNaN = (a) => Number.isNaN(a)
 const isFinite = (a) => Number.isFinite(a)
 
+const inverse = (a) => 1 / a
 const square = (a) => a * a
 const inverseSqrt = (a) => 1 / Math.sqrt(a)
 
@@ -23,7 +24,7 @@ module.exports = {
 	...{ PInfinity: Infinity, NInfinity: -Infinity, NaN },
 	...{ isNaN, isFinite },
 	...arithmeticOrerators,
-	...{ square, inverseSqrt },
+	...{ inverse, square, inverseSqrt },
 	...M,
 	...comparisonOrerators,
 	...{ fromNumber, toNumber },

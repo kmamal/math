@@ -95,9 +95,13 @@ const defineFor = (Domain) => {
 	sub.$$$ = sub$$$
 
 	const dot = ([ ax, ay, az, aw ], [ bx, by, bz, bw ]) => _add(
-		_mul(ax, bx),
-		_mul(ay, by),
-		_mul(az, bz),
+		_add(
+			_add(
+				_mul(ax, bx),
+				_mul(ay, by),
+			),
+			_mul(az, bz),
+		),
 		_mul(aw, bw),
 	)
 
