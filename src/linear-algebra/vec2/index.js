@@ -33,48 +33,68 @@ const defineFor = (Domain) => {
 		_neg(x),
 		_neg(y),
 	]
+	const negTo = (dst, [ x, y ]) => {
+		dst[0] = _neg(x)
+		dst[1] = _neg(y)
+	}
 	const neg$$$ = (a) => {
 		const [ x, y ] = a
 		a[X] = _neg(x)
 		a[Y] = _neg(y)
 		return a
 	}
+	neg.to = negTo
 	neg.$$$ = neg$$$
 
 	const abs = ([ x, y ]) => [
 		_abs(x),
 		_abs(y),
 	]
+	const absTo = (dst, [ x, y ]) => {
+		dst[0] = _abs(x)
+		dst[1] = _abs(y)
+	}
 	const abs$$$ = (a) => {
 		const [ x, y ] = a
 		a[X] = _abs(x)
 		a[Y] = _abs(y)
 		return a
 	}
+	abs.to = absTo
 	abs.$$$ = abs$$$
 
 	const add = ([ ax, ay ], [ bx, by ]) => [
 		_add(ax, bx),
 		_add(ay, by),
 	]
+	const addTo = (dst, [ ax, ay ], [ bx, by ]) => {
+		dst[0] = _add(ax, bx)
+		dst[1] = _add(ay, by)
+	}
 	const add$$$ = (a, [ bx, by ]) => {
 		const [ ax, ay ] = a
 		a[X] = _add(ax, bx)
 		a[Y] = _add(ay, by)
 		return a
 	}
+	add.to = addTo
 	add.$$$ = add$$$
 
 	const sub = ([ ax, ay ], [ bx, by ]) => [
 		_sub(ax, bx),
 		_sub(ay, by),
 	]
+	const subTo = (dst, [ ax, ay ], [ bx, by ]) => {
+		dst[0] = _sub(ax, bx)
+		dst[1] = _sub(ay, by)
+	}
 	const sub$$$ = (a, [ bx, by ]) => {
 		const [ ax, ay ] = a
 		a[X] = _sub(ax, bx)
 		a[Y] = _sub(ay, by)
 		return a
 	}
+	sub.to = subTo
 	sub.$$$ = sub$$$
 
 	const dot = ([ ax, ay ], [ bx, by ]) => _add(
@@ -104,12 +124,17 @@ const defineFor = (Domain) => {
 		_mul(x, v),
 		_mul(y, v),
 	]
+	const scaleTo = (dst, [ x, y ], v) => {
+		dst[0] = _mul(x, v)
+		dst[1] = _mul(y, v)
+	}
 	const scale$$$ = (a, v) => {
 		const [ x, y ] = a
 		a[X] = x * v
 		a[Y] = y * v
 		return a
 	}
+	scale.to = scaleTo
 	scale.$$$ = scale$$$
 
 	const normSquared = (x) => dot(x, x)

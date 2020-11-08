@@ -3,6 +3,11 @@ const { defineFor } = require('.')
 const N = require('../../domains/number')
 const V3 = defineFor(N)
 
+const floatEqual = (t, actual, expected, tollerance = 1e-5) => t.ok(
+	Math.abs(actual - expected) < tollerance,
+	{ actual, expected },
+)
+
 test('vec3.isFinite', (t) => {
 	t.equal(V3.isFinite([ 0, 0, 0 ]), true)
 	t.equal(V3.isFinite([ 10, -5, 0 ]), true)
@@ -86,10 +91,10 @@ test('vec3.cross', (t) => {
 test('vec3.angle', (t) => {
 	t.equal(V3.angle([ 0, 0, 0 ], [ 0, 0, 0 ]), NaN)
 	t.equal(V3.angle([ 1, 1, 1 ], [ 0, 0, 0 ]), NaN)
-	t.ok(Math.abs(V3.angle([ 1, 1, 1 ], [ 1, 1, 1 ])) < 1e-5)
-	t.ok(Math.abs(V3.angle([ 0, 0, 1 ], [ 0, 0, -1 ]) - Math.PI) < 1e-5)
-	t.ok(Math.abs(V3.angle([ 1, 1, 1 ], [ -1, -1, -1 ]) - Math.PI) < 1e-5)
-	t.ok(Math.abs(V3.angle([ 1, 0, 0 ], [ 0, 0, 1 ]) - Math.PI / 2) < 1e-5)
+	floatEqual(t, V3.angle([ 1, 1, 1 ], [ 1, 1, 1 ]), 0)
+	floatEqual(t, V3.angle([ 0, 0, 1 ], [ 0, 0, -1 ]), Math.PI)
+	floatEqual(t, V3.angle([ 1, 1, 1 ], [ -1, -1, -1 ]), Math.PI)
+	floatEqual(t, V3.angle([ 1, 0, 0 ], [ 0, 0, 1 ]), Math.PI / 2)
 })
 
 test('vec3.eq', (t) => {
