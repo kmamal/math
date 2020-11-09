@@ -144,11 +144,19 @@ const defineFor = (Domain) => {
 	const normalize$$$ = (x) => scale$$$(x, _inverse(norm(x)))
 	normalize.$$$ = normalize$$$
 
+	const copy = (dst, [ x, y ]) => {
+		dst[0] = x
+		dst[1] = y
+	}
+
+	const clone = ([ x, y ]) => [ x, y ]
+
 	return {
 		...{ isFinite, isNaN },
 		...{ neg, abs, add, sub, dot, cross, angle },
 		...{ eq, neq },
 		...{ scale, norm, normSquared, normalize },
+		...{ copy, clone },
 	}
 }
 
