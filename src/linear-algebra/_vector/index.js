@@ -24,7 +24,7 @@ const makeVector = (Domain) => {
 
 	const add = (a, b) => {
 		const length = Math.max(a.length, b.length)
-		const result = Array(length)
+		const result = new Array(length)
 		for (let i = 0; i < length; i++) {
 			result[i] = _add(a[i], b[i])
 		}
@@ -41,7 +41,7 @@ const makeVector = (Domain) => {
 
 	const sub = (a, b) => {
 		const length = Math.max(a.length, b.length)
-		const result = Array(length)
+		const result = new Array(length)
 		for (let i = 0; i < length; i++) {
 			result[i] = _sub(a[i], b[i])
 		}

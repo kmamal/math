@@ -6,7 +6,6 @@
     "type": "git",
     "url": "git:repos/math"
   },
-  "main": "src/index.js",
   "exports": {
     "./": "./src/"
   },
