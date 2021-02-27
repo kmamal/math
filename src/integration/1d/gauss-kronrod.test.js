@@ -33,13 +33,13 @@ const cases = [
 	[ transformIndefinite(normal), 0, 1, 0.5 ],
 ]
 
-test('math.integration.1d.gauss-kronrod', (t) => {
+test("math.integration.1d.gauss-kronrod", (t) => {
 	for (const [ func, from, to, expected ] of cases) {
 		testFloatEqual(t, integrateGaussKronrod(func, from, to).kronrod, expected, 1e-4)
 	}
 })
 
-test('math.integration.1d.globaly-adaptive-gauss-kronrod', (t) => {
+test("math.integration.1d.globaly-adaptive-gauss-kronrod", (t) => {
 	for (const [ func, from, to, expected ] of cases) {
 		testFloatEqual(t, integrateGloballyAdaptiveGaussKronrod(func, from, to), expected)
 	}

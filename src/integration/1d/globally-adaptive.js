@@ -11,7 +11,7 @@ const __initializeGloballyAdaptive = (rule, from, to) => {
 	return { rounds, value, error, intervals }
 }
 
-const __integrateGloballyAdaptive = (state, rule) => {
+const __iterateGloballyAdaptive = (state, rule) => {
 	state.rounds++
 	const { intervals } = state
 
@@ -42,7 +42,7 @@ const integrateGloballyAdaptive = (rule, from, to, options = {}) => {
 
 	const state = __initializeGloballyAdaptive(rule, from, to)
 	for (;;) {
-		const done = __integrateGloballyAdaptive(state, rule)
+		const done = __iterateGloballyAdaptive(state, rule)
 		if (done) { break }
 		if (state.rounds >= rounds) { break }
 		if (state.error <= eps) { break }
@@ -53,6 +53,6 @@ const integrateGloballyAdaptive = (rule, from, to, options = {}) => {
 
 module.exports = {
 	__initializeGloballyAdaptive,
-	__integrateGloballyAdaptive,
+	__iterateGloballyAdaptive,
 	integrateGloballyAdaptive,
 }

@@ -30,7 +30,7 @@ const easy_cases = [
 	[ quadratic, -1, 1, 2 / 3 ],
 ]
 
-test('math.integration.1d.gauss', (t) => {
+test("math.integration.1d.gauss", (t) => {
 	for (const [ func, from, to, expected ] of easy_cases) {
 		testFloatEqual(t, integrateGauss(func, from, to), expected)
 	}
@@ -41,7 +41,7 @@ const hard_cases = [
 	[ transformIndefinite(normal), 0, 1, 0.5 ],
 ]
 
-test('math.integration.1d.gaussN', (t) => {
+test("math.integration.1d.gaussN", (t) => {
 	for (const [ func, from, to, expected ] of easy_cases) {
 		testFloatEqual(t, integrateGaussN(func, from, to, 5), expected)
 	}

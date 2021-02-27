@@ -51,10 +51,10 @@ const calculateOrder = ({ order, domain, initial, func, gradient }) => order
 	|| null
 
 const validateProblem = ({ func, gradient, order, domain, initial }) => {
-	if (!func && !gradient) { throw new Error('No function or gradient given') }
+	if (!func && !gradient) { throw new Error("No function or gradient given") }
 
 	if (domain.length !== order) {
-		const error = new Error('Unexpected number of dimensions')
+		const error = new Error("Unexpected number of dimensions")
 		error.expected = order
 		error.found = domain.length
 		throw error
@@ -65,7 +65,7 @@ const validateProblem = ({ func, gradient, order, domain, initial }) => {
 		const invalid_from = typeof from !== 'number' || Number.isNaN(from)
 		const invalid_to = typeof to !== 'number' || Number.isNaN(to)
 		if (invalid_from || invalid_to) {
-			const error = new Error('Invalid domain')
+			const error = new Error("Invalid domain")
 			error.domain = domain[i]
 			error.index = i
 			throw error
@@ -74,7 +74,7 @@ const validateProblem = ({ func, gradient, order, domain, initial }) => {
 
 	if (initial) {
 		if (initial.length !== order) {
-			const error = new Error('Unexpected number of variables')
+			const error = new Error("Unexpected number of variables")
 			error.expected = order
 			error.found = initial.length
 			throw error
@@ -83,7 +83,7 @@ const validateProblem = ({ func, gradient, order, domain, initial }) => {
 		for (let i = 0; i < order; i++) {
 			const variable = initial[i]
 			if (variable < domain[i].from || domain[i].to < variable) {
-				const error = new Error('Initial variable outside of range')
+				const error = new Error("Initial variable outside of range")
 				error.variable = variable
 				error.domain = domain[i]
 				error.index = i
@@ -97,7 +97,7 @@ const normalizeProblem = (_problem) => {
 	const problem = fp.cloneDeep(_problem)
 
 	problem.order = calculateOrder(problem)
-	if (!problem.order) { throw new Error('No dimensions given') }
+	if (!problem.order) { throw new Error("No dimensions given") }
 
 	problem.domain = fp.pipe(
 		() => problem.domain,
@@ -132,7 +132,7 @@ const minimize = (_problem, _limits, state) => {
 	}
 
 	if (algorithm === null) {
-		throw new Error('No algorithm available for this problem and limits')
+		throw new Error("No algorithm available for this problem and limits")
 	}
 
 	// Solve
@@ -143,7 +143,7 @@ const minimize = (_problem, _limits, state) => {
 // TODO: find all roots
 const solve = (problem, limits) => {
 	const { func, ...rest_problem } = problem
-	if (!func) { throw new Error('No function specified') }
+	if (!func) { throw new Error("No function specified") }
 
 	const abs_func = (...args) => Math.abs(func(...args))
 	const order = calculateOrder(problem) // Because we erase the `func.length` information

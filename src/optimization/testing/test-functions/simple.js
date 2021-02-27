@@ -1,17 +1,4 @@
 
-const sphere = (order) => ({
-	order,
-	func (...args) {
-		let sum = 0
-		for (const x of args) {
-			sum += x ** 2
-		}
-		return sum
-	},
-	domain: new Array(order).fill({ type: 'real' }),
-})
-
-
 const rastrigin = (order) => ({
 	order,
 	func (...args) {
@@ -32,6 +19,19 @@ const ackley = () => ({
 				+ Math.E - Math.exp((Math.cos(2 * Math.PI * x) + Math.cos(2 * Math.PI * y)) / 2)
 	},
 	domain: new Array(2).fill({ type: 'real', from: -5, to: 5 }),
+})
+
+
+const sphere = (order) => ({
+	order,
+	func (...args) {
+		let sum = 0
+		for (const x of args) {
+			sum += x ** 2
+		}
+		return sum
+	},
+	domain: new Array(order).fill({ type: 'real' }),
 })
 
 
@@ -139,6 +139,50 @@ const easom = () => ({
 })
 
 
+const cross_in_tray = () => ({
+	order: 2,
+	func (x, y) {
+		return 2.06261 - 0.0001 * (
+			(Math.abs(Math.sin(x) * Math.sin(y) * Math.exp(Math.abs(100 - Math.sqrt(x ** 2 + y ** 2) / Math.PI))) + 1) ** 0.1
+		)
+	},
+	domain: new Array(2).fill({ type: 'real', from: -10, to: 10 }),
+})
+
+
+const eggholder = () => ({
+	order: 2,
+	func (x, y) {
+		const y47 = y + 47
+		return 959.6407
+			- y47 * Math.sin(Math.sqrt(Math.abs(x / 2 + y47)))
+			- x * Math.sin(Math.sqrt(Math.abs(x - y47)))
+	},
+	domain: new Array(2).fill({ type: 'real', from: -512, to: 512 }),
+})
+
+
+const hoelder_table = () => ({
+	order: 2,
+	func (x, y) {
+		return 19.2085 - Math.abs(Math.sin(x) * Math.cos(y) * Math.exp(Math.abs(1 - Math.sqrt(x ** 2 + y ** 2) / Math.PI)))
+	},
+	domain: new Array(2).fill({ type: 'real', from: -10, to: 10 }),
+})
+
+
+const mccormic = () => ({
+	order: 2,
+	func (x, y) {
+		return 1.9133 + Math.sin(x + y) + (x - y) ** 2 - 1.5 * x + 2.5 * y + 1
+	},
+	domain: [
+		{ type: 'real', from: -1.5, to: 4 },
+		{ type: 'real', from: -3, to: 4 },
+	],
+})
+
+
 const schaffer_2 = () => ({
 	order: 2,
 	func (x, y) {
@@ -150,10 +194,35 @@ const schaffer_2 = () => ({
 })
 
 
+const schaffer_4 = () => ({
+	order: 2,
+	func (x, y) {
+		const x2 = x ** 2
+		const y2 = y ** 2
+		return -0.292579 + 0.5 + (Math.cos(Math.sin(Math.abs(x2 - y2))) ** 2 - 0.5) / (1 + 0.001 * (x2 + y2)) ** 2
+	},
+	domain: new Array(2).fill({ type: 'real', from: -100, to: 100 }),
+})
+
+
+const styblinski_tang = (order) => ({
+	order,
+	func (...args) {
+		let sum = 0
+		for (const x of args) {
+			const x2 = x ** 2
+			sum += x2 ** 2 - 16 * x2 + 5 * x
+		}
+		return order * 39.16617 + sum / 2
+	},
+	domain: new Array(order).fill({ type: 'real', from: -5, to: 5 }),
+})
+
+
 module.exports = {
-	sphere,
 	rastrigin,
 	ackley,
+	sphere,
 	rosenbrock,
 	beale,
 	goldstein_price,
@@ -164,5 +233,11 @@ module.exports = {
 	himmelblau,
 	three_hump_camel,
 	easom,
+	cross_in_tray,
+	eggholder,
+	hoelder_table,
+	mccormic,
 	schaffer_2,
+	schaffer_4,
+	styblinski_tang,
 }

@@ -12,7 +12,7 @@ const unary = [ S.neg, S.sin, S.cos, S.exp, S.ln ]
 const binary = [ S.add, S.sub, S.mul, S.div, S.pow, S.log ]
 
 const random = (n) => {
-	if (n === 0) { throw new Error('failed') }
+	if (n === 0) { throw new Error("failed") }
 	if (n === 1) { return fp.sample(atoms) }
 	if (n === 2) { return fp.sample(unary)(random(1)) }
 

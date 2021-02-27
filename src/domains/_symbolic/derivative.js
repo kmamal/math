@@ -63,7 +63,7 @@ const _derivative = (f, name) => {
 			const dx = derivative(x, name)
 			return S.neg(S.mul(dx, S.sin(x)))
 		}
-		default: throw new Error('wat')
+		default: throw new Error("wat")
 	}
 }
 

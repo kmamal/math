@@ -1,7 +1,7 @@
 const I = require('../integer')
 const { defineFor } = require('../../gcd')
 const gcd = defineFor(I)
-const Float = require('@xyz/util/ieee-float')
+const Float = require('@xyz/util/ieee-float/double')
 
 const TWO_POW_53 = 2 ** 53
 const BIG_TWO_POW_52 = 1n << 52n
