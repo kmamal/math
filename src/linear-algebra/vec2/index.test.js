@@ -93,13 +93,22 @@ test("vec2.cross", (t) => {
 })
 
 test("vec2.angle", (t) => {
-	t.equal(V2.angle([ 0, 0 ], [ 0, 0 ]), NaN)
-	t.equal(V2.angle([ 1, 1 ], [ 0, 0 ]), NaN)
-	floatEqual(t, V2.angle([ 1, 1 ], [ 1, 1 ]), 0)
-	floatEqual(t, V2.angle([ 1, 0 ], [ -1, 0 ]), Math.PI)
-	floatEqual(t, V2.angle([ 1, 1 ], [ -1, -1 ]), Math.PI)
-	floatEqual(t, V2.angle([ 1, 0 ], [ 0, 1 ]), Math.PI / 2)
-	floatEqual(t, V2.angle([ 0, 1 ], [ 1, 0 ]), Math.PI / 2)
+	t.equal(V2.angle([ 0, 0 ]), NaN)
+	floatEqual(t, V2.angle([ 1, 0 ]), 0)
+	floatEqual(t, V2.angle([ 1, 1 ]), Math.PI / 4)
+	floatEqual(t, V2.angle([ 0, 1 ]), Math.PI / 2)
+	floatEqual(t, V2.angle([ -1, 1 ]), 3 * Math.PI / 4)
+	floatEqual(t, V2.angle([ -1, 0 ]), Math.PI)
+})
+
+test("vec2.angle2", (t) => {
+	t.equal(V2.angle2([ 0, 0 ], [ 0, 0 ]), NaN)
+	t.equal(V2.angle2([ 1, 1 ], [ 0, 0 ]), NaN)
+	floatEqual(t, V2.angle2([ 1, 1 ], [ 1, 1 ]), 0)
+	floatEqual(t, V2.angle2([ 1, 0 ], [ -1, 0 ]), Math.PI)
+	floatEqual(t, V2.angle2([ 1, 1 ], [ -1, -1 ]), Math.PI)
+	floatEqual(t, V2.angle2([ 1, 0 ], [ 0, 1 ]), Math.PI / 2)
+	floatEqual(t, V2.angle2([ 0, 1 ], [ 1, 0 ]), Math.PI / 2)
 })
 
 test("vec2.eq", (t) => {

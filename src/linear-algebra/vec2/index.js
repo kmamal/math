@@ -17,6 +17,7 @@ const defineFor = (Domain) => {
 		neq: _neq,
 		sqrt: _sqrt,
 		acos: _acos,
+		atan2: _atan2,
 		max: _max,
 		min: _min,
 	} = Domain
@@ -107,7 +108,9 @@ const defineFor = (Domain) => {
 		_mul(ay, bx),
 	)
 
-	const angle = (a, b) => _acos(_max(-1, _min(1, _div(
+	const angle = ([ x, y ]) => x === 0 && y === 0 ? NaN : _atan2(y, x)
+
+	const angle2 = (a, b) => _acos(_max(-1, _min(1, _div(
 		dot(a, b),
 		_mul(norm(a), norm(b)),
 	))))
@@ -153,7 +156,7 @@ const defineFor = (Domain) => {
 
 	return {
 		...{ isFinite, isNaN },
-		...{ neg, abs, add, sub, dot, cross, angle },
+		...{ neg, abs, add, sub, dot, cross, angle, angle2 },
 		...{ eq, neq },
 		...{ scale, norm, normSquared, normalize },
 		...{ copy, clone },
