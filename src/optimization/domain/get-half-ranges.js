@@ -1,4 +1,4 @@
-const { map } = require('@xyz/util/array/map')
+const { map } = require('@kmamal/util/array/map')
 
 // NOTE: The full range (from -MAX_VALUE to MAX_VALUE) would overflow.
 

@@ -1,5 +1,5 @@
 const I = require('../integer')
-const Float = require('@xyz/util/ieee-float/double')
+const Float = require('@kmamal/util/ieee-float/double')
 
 const MAX_SAFE_MANTISSA = (1n << 53n) - 1n
 const BIG_TWO_POW_52 = 1n << 52n

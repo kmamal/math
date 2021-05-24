@@ -1,4 +1,4 @@
-const { random } = require('@xyz/util/random/random')
+const { random } = require('@kmamal/util/random/random')
 const { sampleExponential } = require('./exponential')
 const { sampleNormal } = require('./normal')
 

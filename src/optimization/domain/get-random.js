@@ -1,5 +1,5 @@
-const { map } = require('@xyz/util/array/map')
-const { randFloat } = require('@xyz/util/random/rand-float')
+const { map } = require('@kmamal/util/array/map')
+const { randFloat } = require('@kmamal/util/random/rand-float')
 
 const getDimensionRandom = ({ from, to }) => randFloat(from, to)
 

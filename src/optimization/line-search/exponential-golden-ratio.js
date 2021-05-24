@@ -3,15 +3,12 @@ const { __initGoldenRatio, __iterGoldenRatio } = require('./golden-ratio')
 const PHI = (1 + Math.sqrt(5)) / 2
 const INVPHI = 1 / PHI
 
-const __initExponentialGoldenRatio = (func, _a, _fa, step) => {
-	const a = _a
-	const fa = _fa
-
+const __initExponentialGoldenRatio = (func, a, fa, step) => {
 	const c = a + step
 	const fc = func(c)
 
 	if (fc >= fa) {
-		const state = __initGoldenRatio(func, a, fa, c, fc)
+		const state = __initGoldenRatio(func, a, c)
 		state.evaluations += 1
 		return state
 	}
@@ -45,8 +42,7 @@ const exponentialGoldenRatio = (func, a, step) => {
 	const fa = func(a)
 	const state = __initExponentialGoldenRatio(func, a, fa, step)
 	state.evaluations += 1
-	for (;;) {
-		if (state.d) { break }
+	while (!state.d) {
 		__expandExponentialGoldenRatio(state, func)
 	}
 	for (let i = 0; i < 10; i++) {

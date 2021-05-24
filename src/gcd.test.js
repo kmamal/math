@@ -1,4 +1,4 @@
-const { test } = require('@xyz/testing')
+const { test } = require('@kmamal/testing')
 const { defineFor } = require('./gcd')
 const N = require('./domains/number')
 const gcd = defineFor(N)

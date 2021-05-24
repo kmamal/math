@@ -1,5 +1,5 @@
 const { sampleSphere } = require('../../../sampling/sphere')
-const { random: randomRadius } = require('@xyz/util/random/random')
+const { random: randomRadius } = require('@kmamal/util/random/random')
 
 const getNeighborHyperball = (solution, steps) => {
 	const { length } = solution

@@ -1,4 +1,4 @@
-const { map } = require('@xyz/util/array/map')
+const { map } = require('@kmamal/util/array/map')
 
 const makeGeometric = (rate) => {
 	const fn = (x) => x * rate

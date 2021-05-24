@@ -1,4 +1,4 @@
-const { random } = require('@xyz/util/random/random')
+const { random } = require('@kmamal/util/random/random')
 
 let has_sample = false
 let sample

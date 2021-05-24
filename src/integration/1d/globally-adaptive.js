@@ -1,4 +1,4 @@
-const { Heap } = require('@xyz/util/structs/heap')
+const { Heap } = require('@kmamal/util/structs/heap')
 
 const __initializeGloballyAdaptive = (rule, from, to) => {
 	const rounds = 1

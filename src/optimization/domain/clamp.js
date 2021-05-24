@@ -1,5 +1,5 @@
-const { clamp: clampNumber } = require('@xyz/util/number/clamp')
-const { clone } = require('@xyz/util/array/clone')
+const { clamp: clampNumber } = require('@kmamal/util/number/clamp')
+const { clone } = require('@kmamal/util/array/clone')
 
 const __clamp = (dst, src, domain) => {
 	for (let i = 0; i < domain.length; i++) {

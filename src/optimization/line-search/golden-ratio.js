@@ -3,36 +3,12 @@ const PHI = (1 + Math.sqrt(5)) / 2
 const INVPHI = 1 / PHI
 const INVPHI2 = INVPHI * INVPHI
 
-const __initGoldenRatio = (func, _a, _fa, _b, _fb) => {
-	let evaluations = 0
-	let a = _a
-	let fa = _fa
-	let b = _b
-	let fb = _fb
-	evaluations++
-
-	let c
-	let fc
-
-	for (;;) {
-		c = a + INVPHI2 * (b - a)
-		fc = func(c)
-		evaluations++
-
-		if (fc >= fa) {
-			b = c
-			fb = fc
-		} else if (fc >= fb) {
-			a = c
-			fa = fc
-		} else {
-			break
-		}
-	}
-
+const __initGoldenRatio = (func, a, b) => {
+	const c = a + INVPHI2 * (b - a)
 	const d = a + INVPHI * (b - a)
+	const fc = func(c)
 	const fd = func(d)
-	evaluations++
+	const evaluations = 2
 
 	return { evaluations, a, b, c, fc, d, fd }
 }
@@ -57,9 +33,7 @@ const __iterGoldenRatio = (state, func) => {
 }
 
 const searchGoldenRatio = (func, a, b) => {
-	const fa = func(a)
-	const fb = func(b)
-	const state = __initGoldenRatio(func, a, fa, b, fb)
+	const state = __initGoldenRatio(func, a, b)
 	state.evaluations += 2
 	for (let i = 0; i < 10; i++) {
 		__iterGoldenRatio(state, func)

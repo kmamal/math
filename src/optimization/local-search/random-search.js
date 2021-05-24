@@ -1,6 +1,6 @@
 const { getHalfRanges } = require('../../domain/get-half-ranges')
 const { getRandom } = require('../../domain/get-random')
-const { max } = require('@xyz/util/array/max')
+const { max } = require('@kmamal/util/array/max')
 
 const { getNeighborHypersphere } = require('./random-neighbor/hypersphere')
 const { clamp } = require('../../domain/clamp')

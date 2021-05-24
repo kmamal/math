@@ -1,4 +1,4 @@
-const { clone } = require('@xyz/util/array/clone')
+const { clone } = require('@kmamal/util/array/clone')
 const { getRandom } = require('../domain/get-random')
 
 const __initMultiStart = (state, problem, algo, n) => {

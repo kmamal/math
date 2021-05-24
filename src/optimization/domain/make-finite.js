@@ -1,5 +1,5 @@
-const { map } = require('@xyz/util/array/map')
-const { zipWith } = require('@xyz/util/array/zip')
+const { map } = require('@kmamal/util/array/map')
+const { zipWith } = require('@kmamal/util/array/zip')
 
 const makeDimensionFinite = ({ from, to }) => ({
 	from: Math.max(-Number.MAX_VALUE, from),

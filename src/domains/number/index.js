@@ -1,5 +1,5 @@
-const arithmeticOrerators = require('@xyz/util/operators/arithmetic')
-const comparisonOrerators = require('@xyz/util/operators/comparison')
+const arithmeticOrerators = require('@kmamal/util/operators/arithmetic')
+const comparisonOrerators = require('@kmamal/util/operators/comparison')
 
 const isNaN = (a) => Number.isNaN(a)
 const isFinite = (a) => Number.isFinite(a)

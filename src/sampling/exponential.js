@@ -1,4 +1,4 @@
-const { random } = require('@xyz/util/random/random')
+const { random } = require('@kmamal/util/random/random')
 
 const sampleUnscaledExponential = () => -Math.log(1.0 - random())
 
