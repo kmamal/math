@@ -86,19 +86,19 @@ const pow = (a, b) => {
 	if (a === NAN) { return NAN }
 
 	if (!isFinite(b)) {
-		const abs_base = abs(a)
-		if (abs_base === 1n) { return NAN }
+		const absBase = abs(a)
+		if (absBase === 1n) { return NAN }
 
-		const magn_base = sign(sub(abs_base, 1n))
-		const sign_exp = sign(b)
-		return magn_base * sign_exp === -1n ? 0n : P_INFINITY
+		const magnBase = sign(sub(absBase, 1n))
+		const signExp = sign(b)
+		return magnBase * signExp === -1n ? 0n : P_INFINITY
 	}
 
 	if (a === P_INFINITY) { return b > 0n ? P_INFINITY : 0n }
 	if (a === N_INFINITY) {
 		if (b < 0n) { return 0n }
-		const odd_exp = b % 2 === 1
-		return _getSignedInfinity(odd_exp ? -1n : 1n)
+		const oddExp = b % 2 === 1
+		return _getSignedInfinity(oddExp ? -1n : 1n)
 	}
 
 	if (a === 0n) { return b > 0n ? 0n : P_INFINITY }
