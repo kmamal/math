@@ -1,5 +1,6 @@
 const arithmeticOrerators = require('@kmamal/util/operators/arithmetic')
 const comparisonOrerators = require('@kmamal/util/operators/comparison')
+const { identity } = require('@kmamal/util/function/identity')
 
 const isNaN = (a) => Number.isNaN(a)
 const isFinite = (a) => Number.isFinite(a)
@@ -17,8 +18,8 @@ for (const prop of props) {
 const fromString = (s) => parseFloat(s)
 const toString = (a) => a.toString()
 
-const fromNumber = (x) => x
-const toNumber = (x) => x
+const fromNumber = identity
+const toNumber = identity
 
 module.exports = {
 	...{ PInfinity: Infinity, NInfinity: -Infinity, NaN },

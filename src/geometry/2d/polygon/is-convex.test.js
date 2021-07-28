@@ -1,5 +1,6 @@
 const { test } = require('@kmamal/testing')
-const { isConvex } = require('./is-convex')
+const N = require('../../../domains/number')
+const { isConvex } = require('./is-convex').defineFor(N)
 
 test("geometry.polygon.isConvex", (t) => {
 	/* eslint-disable comma-spacing */

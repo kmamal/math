@@ -1,62 +1,69 @@
-const V2 = require('../vec2')
+const { memoize } = require('@kmamal/util/function/memoize')
 const { __min } = require('@kmamal/util/array')
 
-const __convexHull = (dst, dst_start, src, src_start, src_end) => {
-	const a = __min(src, src_start, src_end, ([ x ]) => x)
-	let b = a
-	const ab = [ 0, 1 ]
+const defineFor = memoize((Domain) => {
+	const { eq, gt, lte } = Domain
+	const V2 = require('../../../linear-algebra/vec2').defineFor(Domain)
 
-	let write_index = dst_start
-	dst[write_index++] = a
+	const __convexHull = (dst, dstStart, src, srcStart, srcEnd) => {
+		const a = __min(src, srcStart, srcEnd, ([ x ]) => x)
+		let b = a
+		const ab = [ 0, 1 ]
 
-	let c
-	const bc = new Array(2)
-	const bp = new Array(2)
+		let writeIndex = dstStart
+		dst[writeIndex++] = a
 
-	for (;;) {
-		let min_angle = Infinity
-		let bc_ns = -Infinity
+		let c
+		const bc = new Array(2)
+		const bp = new Array(2)
 
-		let read_index = src_start
-		while (read_index !== src_end) {
-			const p = src[read_index++]
-			if (V2.eq(p, b)) { continue }
+		for (;;) {
+			let minAngle = Infinity
+			let bcNorm = -Infinity
 
-			V2.sub.to(bp, p, b)
-			const angle = V2.angle2(bp, ab)
-			if (angle > min_angle) { continue }
+			let readIndex = srcStart
+			while (readIndex !== srcEnd) {
+				const p = src[readIndex++]
+				if (V2.eq(p, b)) { continue }
 
-			const bp_ns = V2.normSquared(bp)
-			if (angle === min_angle && bp_ns <= bc_ns) { continue }
+				V2.sub.to(bp, p, b)
+				const angle = V2.angle2(bp, ab)
+				if (gt(angle, minAngle)) { continue }
 
-			min_angle = angle
-			c = p
-			V2.copy(bc, bp)
-			bc_ns = bp_ns
+				const bpNorm = V2.normSquared(bp)
+				if (eq(angle, minAngle) && lte(bpNorm, bcNorm)) { continue }
+
+				minAngle = angle
+				c = p
+				V2.copy(bc, bp)
+				bcNorm = bpNorm
+			}
+
+			if (V2.eq(c, a)) { break }
+			dst[writeIndex++] = c
+
+			b = c
+			V2.copy(ab, bc)
 		}
 
-		if (V2.eq(c, a)) { break }
-		dst[write_index++] = c
-
-		b = c
-		V2.copy(ab, bc)
+		const hullLength = writeIndex - dstStart
+		if (hullLength < 3) { return null }
+		return hullLength
 	}
 
-	const hull_length = write_index - dst_start
-	if (hull_length < 3) { return null }
-	return hull_length
-}
+	const convexHull = (points) => {
+		const { length } = points
+		if (length < 3) { return null }
+		const res = []
+		const n = __convexHull(res, 0, points, 0, points.length)
+		if (n === null) { return null }
+		return res
+	}
 
-const convexHull = (points) => {
-	const { length } = points
-	if (length < 3) { return null }
-	const res = []
-	const n = __convexHull(res, 0, points, 0, points.length)
-	if (n === null) { return null }
-	return res
-}
+	return {
+		__convexHull,
+		convexHull,
+	}
+})
 
-module.exports = {
-	__convexHull,
-	convexHull,
-}
+module.exports = { defineFor }

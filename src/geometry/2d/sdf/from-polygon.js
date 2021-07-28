@@ -1,11 +1,17 @@
-const Minkowski = require('../minkowski')
-const Point = require('./from-point')
+const { memoize } = require('@kmamal/util/function/memoize')
 
-const ORIGIN = [ 0, 0 ]
+const defineFor = memoize((Domain) => {
+	const Minkowski = require('../minkowski').defineFor(Domain)
+	const Point = require('./from-point').defineFor(Domain)
 
-const polygon2polygon = (a, b) => {
-	const diff = Minkowski.diffPolygonPolygon(a, b)
-	return Point.point2polygon(ORIGIN, diff)
-}
+	const ORIGIN = [ 0, 0 ]
 
-module.exports = { polygon2polygon }
+	const polygon2polygon = (a, b) => {
+		const diff = Minkowski.diffPolygonPolygon(a, b)
+		return Point.point2polygon(ORIGIN, diff)
+	}
+
+	return { polygon2polygon }
+})
+
+module.exports = { defineFor }

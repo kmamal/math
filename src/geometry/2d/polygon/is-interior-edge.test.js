@@ -1,5 +1,6 @@
 const { test } = require('@kmamal/testing')
-const { isInteriorEdge } = require('./is-interior-edge')
+const N = require('../../../domains/number')
+const { isInteriorEdge } = require('./is-interior-edge').defineFor(N)
 
 /* eslint-disable comma-spacing */
 const polygon = [ 0,0, 0,3, 1,3, 1,1, 3,1, 3,0 ]

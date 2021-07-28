@@ -1,5 +1,6 @@
 const { test } = require('@kmamal/testing')
-const I = require('./includes')
+const N = require('../../domains/number')
+const I = require('./includes').defineFor(N)
 
 test("geometry.distance.pointInPoint", (t) => {
 	t.equal(I.pointInPoint([ 0, 0 ], [ 0, 0 ]), true)

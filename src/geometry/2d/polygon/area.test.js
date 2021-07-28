@@ -1,5 +1,6 @@
 const { test } = require('@kmamal/testing')
-const { area } = require('./area')
+const N = require('../../../domains/number')
+const { area } = require('./area').defineFor(N)
 
 const floatEqual = (t, actual, expected, tollerance = 1e-5) => t.ok(
 	expected - tollerance <= actual && actual <= expected + tollerance,

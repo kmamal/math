@@ -1,5 +1,6 @@
 /* eslint-disable array-element-newline */
 
+const { memoize } = require('@kmamal/util/function/memoize')
 const { swap } = require('@kmamal/util/array')
 
 const M11 = 0
@@ -19,7 +20,7 @@ const M24 = 13
 const M34 = 14
 const M44 = 15
 
-const defineFor = (Domain) => {
+const defineFor = memoize((Domain) => {
 	const {
 		isFinite: _isFinite,
 		isNaN: _isNaN,
@@ -309,7 +310,7 @@ const defineFor = (Domain) => {
 	}
 	transpose.$$$ = transpose$$$
 
-	const mul_vector = (
+	const mulVector = (
 		[
 			a11, a21, a31, a41,
 			a12, a22, a32, a42,
@@ -324,7 +325,7 @@ const defineFor = (Domain) => {
 		_add(_add(_add(_mul(a14, v1), _mul(a24, v2)), _mul(a34, v3)), _mul(a44, v4)),
 	]
 
-	const mul_vector$$$ = ([
+	const mulVector$$$ = ([
 		a11, a21, a31, a41,
 		a12, a22, a32, a42,
 		a13, a23, a33, a43,
@@ -339,7 +340,7 @@ const defineFor = (Domain) => {
 
 		return v
 	}
-	mul_vector.$$$ = mul_vector$$$
+	mulVector.$$$ = mulVector$$$
 
 	const eq = (
 		[
@@ -425,10 +426,10 @@ const defineFor = (Domain) => {
 
 	return {
 		...{ isFinite, isNaN },
-		...{ neg, add, sub, mul, transpose, mul_vector },
+		...{ neg, add, sub, mul, transpose, mulVector },
 		...{ eq, neq },
 		...{ scale },
 	}
-}
+})
 
 module.exports = { defineFor }

@@ -1,11 +1,14 @@
+const { memoize } = require('@kmamal/util/function/memoize')
 
-module.exports = {
-	...require('./from-point'),
-	...require('./from-circle'),
-	...require('./from-halfplane'),
-	...require('./from-line'),
-	...require('./from-segment'),
-	...require('./from-box'),
-	...require('./from-convex'),
-	...require('./from-polygon'),
-}
+const defineFor = memoize((Domain) => ({
+	...require('./from-point').defineFor(Domain),
+	...require('./from-circle').defineFor(Domain),
+	...require('./from-halfplane').defineFor(Domain),
+	...require('./from-line').defineFor(Domain),
+	...require('./from-segment').defineFor(Domain),
+	...require('./from-box').defineFor(Domain),
+	...require('./from-convex').defineFor(Domain),
+	...require('./from-polygon').defineFor(Domain),
+}))
+
+module.exports = { defineFor }

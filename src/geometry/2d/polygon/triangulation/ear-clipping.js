@@ -1,41 +1,47 @@
-const { isInteriorEdge } = require('../is-interior-edge')
-const { bisect } = require('@kmamal/util/array')
+const { memoize } = require('@kmamal/util/function/memoize')
+const { binarySearch } = require('@kmamal/util/array/search/binary')
 
-const triangulate = (polygon) => {
-	const { length } = polygon
-	const n = length / 2
+const defineFor = memoize((Domain) => {
+	const { isInteriorEdge } = require('../is-interior-edge').defineFor(Domain)
 
-	const remaining = new Array(n)
-	for (let i = 0; i < n; i++) {
-		remaining[i] = i * 2
-	}
+	const triangulate = (polygon) => {
+		const { length } = polygon
+		const n = length / 2
 
-	const triangles = new Array(polygon.length / 2 - 2)
-	let write_index = 0
-
-	let ai = 0
-	let bi = 2
-	let ci = 4
-
-	let remaining_index = 3
-	while (remaining.length > 3) {
-		if (isInteriorEdge(polygon, ai, ci)) {
-			triangles[write_index++] = [ ai, bi, ci ]
-			const splice_index = bisect(remaining, bi)
-			remaining.splice(splice_index, 1)
-			if (remaining_index > splice_index) {
-				remaining_index -= 1
-			}
-		} else {
-			ai = bi
+		const remaining = new Array(n)
+		for (let i = 0; i < n; i++) {
+			remaining[i] = i * 2
 		}
-		bi = ci
-		ci = remaining[remaining_index]
-		remaining_index = (remaining_index + 1) % remaining.length
+
+		const triangles = new Array(polygon.length / 2 - 2)
+		let writeIndex = 0
+
+		let ai = 0
+		let bi = 2
+		let ci = 4
+
+		let remainingIndex = 3
+		while (remaining.length > 3) {
+			if (isInteriorEdge(polygon, ai, ci)) {
+				triangles[writeIndex++] = [ ai, bi, ci ]
+				const spliceIndex = binarySearch(remaining, bi)
+				remaining.splice(spliceIndex, 1)
+				if (remainingIndex > spliceIndex) {
+					remainingIndex -= 1
+				}
+			} else {
+				ai = bi
+			}
+			bi = ci
+			ci = remaining[remainingIndex]
+			remainingIndex = (remainingIndex + 1) % remaining.length
+		}
+
+		triangles[writeIndex++] = [ ai, bi, ci ]
+		return triangles
 	}
 
-	triangles[write_index++] = [ ai, bi, ci ]
-	return triangles
-}
+	return { triangulate }
+})
 
-module.exports = { triangulate }
+module.exports = { defineFor }

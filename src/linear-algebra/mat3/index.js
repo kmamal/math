@@ -1,5 +1,6 @@
 /* eslint-disable array-element-newline */
 
+const { memoize } = require('@kmamal/util/function/memoize')
 const { swap } = require('@kmamal/util/array')
 
 const M11 = 0
@@ -235,7 +236,7 @@ const defineFor = (Domain) => {
 	}
 	transpose.$$$ = transpose$$$
 
-	const mul_vector = (
+	const mulVector = (
 		[
 			a11, a21, a31,
 			a12, a22, a32,
@@ -248,7 +249,7 @@ const defineFor = (Domain) => {
 		_add(_add(_mul(a13, v1), _mul(a23, v2)), _mul(a33, v3)),
 	]
 
-	const mul_vector$$$ = ([
+	const mulVector$$$ = ([
 		a11, a21, a31,
 		a12, a22, a32,
 		a13, a23, a33,
@@ -261,7 +262,7 @@ const defineFor = (Domain) => {
 
 		return v
 	}
-	mul_vector.$$$ = mul_vector$$$
+	mulVector.$$$ = mulVector$$$
 
 	const eq = (
 		[
@@ -329,7 +330,7 @@ const defineFor = (Domain) => {
 
 	return {
 		...{ isFinite, isNaN },
-		...{ neg, add, sub, mul, transpose, mul_vector },
+		...{ neg, add, sub, mul, transpose, mulVector },
 		...{ eq, neq },
 		...{ scale },
 	}

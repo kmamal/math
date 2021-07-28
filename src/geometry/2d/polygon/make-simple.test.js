@@ -1,6 +1,7 @@
 const { test } = require('@kmamal/testing')
-const { makeSimple } = require('./make-simple')
-const { isEqual } = require('./is-equal')
+const N = require('../../../domains/number')
+const { makeSimple } = require('./make-simple').defineFor(N)
+const { isEqual } = require('./is-equal').defineFor(N)
 
 const polygonSetsEqual = (t, actual, expected) => {
 	if (actual.length !== expected.length) {

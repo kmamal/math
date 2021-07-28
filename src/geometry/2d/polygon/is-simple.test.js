@@ -1,5 +1,6 @@
 const { test } = require('@kmamal/testing')
-const { isSimple } = require('./is-simple')
+const N = require('../../../domains/number')
+const { isSimple } = require('./is-simple').defineFor(N)
 
 test("geometry.polygon.isSimple", (t) => {
 	/* eslint-disable comma-spacing */

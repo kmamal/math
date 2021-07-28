@@ -1,9 +1,10 @@
+const { memoize } = require('@kmamal/util/function/memoize')
 
 const X = 0
 const Y = 1
 const Z = 2
 
-const defineFor = (Domain) => {
+const defineFor = memoize((Domain) => {
 	const {
 		isFinite: _isFinite,
 		isNaN: _isNaN,
@@ -20,6 +21,8 @@ const defineFor = (Domain) => {
 		acos: _acos,
 		max: _max,
 		min: _min,
+		fromNumber: _fromNumber,
+		toNumber: _toNumber,
 	} = Domain
 
 	const isFinite = ([ x, y, z ]) => true
@@ -138,12 +141,25 @@ const defineFor = (Domain) => {
 	const normalize$$$ = (x) => scale$$$(x, _inverse(norm(x)))
 	normalize.$$$ = normalize$$$
 
+	const fromNumbers = (x, y, z) => [
+		_fromNumber(x),
+		_fromNumber(y),
+		_fromNumber(z),
+	]
+
+	const toNumbers = ([ x, y, z ]) => [
+		_toNumber(x),
+		_toNumber(y),
+		_toNumber(z),
+	]
+
 	return {
 		...{ isFinite, isNaN },
 		...{ neg, abs, add, sub, dot, cross, angle },
 		...{ eq, neq },
 		...{ scale, norm, normSquared, normalize },
+		...{ fromNumbers, toNumbers },
 	}
-}
+})
 
 module.exports = { defineFor }

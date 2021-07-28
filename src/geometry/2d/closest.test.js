@@ -1,6 +1,6 @@
 // const { test } = require('@kmamal/testing')
-// const C = require('./closest')
-// const V2 = require('./vec2')
+// const N = require('../../../domains/number')
+// const C = require('./closest').defineFor(N)
 
 // const vec2Equal = (t, actual, expected, tollerance = 1e-5) => t.ok(
 // 	Math.abs(V2.norm(V2.sub(actual, expected))) < tollerance,

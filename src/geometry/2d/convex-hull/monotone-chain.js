@@ -1,88 +1,99 @@
-const V2 = require('../vec2')
-const { clone, map, sortBy } = require('@kmamal/util/array')
+const { memoize } = require('@kmamal/util/function/memoize')
+const { clone } = require('@kmamal/util/array/clone')
+const { map } = require('@kmamal/util/array/map')
+const { sortBy } = require('@kmamal/util/array/sort')
 
-const convexHull = (_points) => {
-	const { length } = _points
-	if (length < 3) { return null }
+const defineFor = memoize((Domain) => {
+	const { lt, fromNumber } = Domain
+	const ZERO = fromNumber(0)
+	const V2 = require('../../../linear-algebra/vec2').defineFor(Domain)
+	const V2_ZERO = V2.fromNumbers(0, 0)
 
-	const points = clone(_points)
-	sortBy.$$$(points, ([ x ]) => x)
+	const convexHull = (_points) => {
+		const { length } = _points
+		if (length < 3) { return null }
 
-	let a = points[0]
-	let read_index = 1
-	let b
-	let ab
-	do {
-		b = points[read_index++]
-		ab = V2.sub(b, a)
-	} while (V2.eq(ab, [ 0, 0 ]))
+		const points = clone(_points)
+		sortBy.$$$(points, ([ x ]) => x)
 
-	const hull = [
-		{ point: a, incoming: null },
-		{ point: b, incoming: ab },
-	]
+		let a = points[0]
+		let readIndex = 1
+		let b
+		let ab
+		do {
+			b = points[readIndex++]
+			ab = V2.sub(b, a)
+		} while (V2.eq(ab, V2_ZERO))
 
-	while (read_index < length) {
-		const c = points[read_index++]
-		let bc = V2.sub(c, b)
+		const hull = [
+			{ point: a, incoming: null },
+			{ point: b, incoming: ab },
+		]
 
-		for (;;) {
-			const is_convex = V2.cross(ab, bc) < 0
-			if (is_convex) { break }
+		while (readIndex < length) {
+			const c = points[readIndex++]
+			let bc = V2.sub(c, b)
 
-			hull.pop()
-			const { point, incoming } = hull[hull.length - 1]
-			b = point
-			bc = V2.sub(c, b)
+			for (;;) {
+				const isConvex = lt(V2.cross(ab, bc), ZERO)
+				if (isConvex) { break }
 
-			if (!incoming) { break }
-			ab = incoming
+				hull.pop()
+				const { point, incoming } = hull[hull.length - 1]
+				b = point
+				bc = V2.sub(c, b)
+
+				if (!incoming) { break }
+				ab = incoming
+			}
+
+			hull.push({ point: c, incoming: bc })
+
+			b = c
+			ab = bc
 		}
 
-		hull.push({ point: c, incoming: bc })
+		const last = hull.length - 1
+		hull[last].incoming = null
+		a = hull[last].point
+		readIndex -= 2
+		do {
+			b = points[readIndex--]
+			ab = V2.sub(b, a)
+		} while (V2.eq(ab, V2_ZERO))
+		hull.push({ point: b, incoming: ab })
 
-		b = c
-		ab = bc
-	}
+		while (readIndex >= 0) {
+			const c = points[readIndex--]
+			let bc = V2.sub(c, b)
 
-	const last = hull.length - 1
-	hull[last].incoming = null
-	a = hull[last].point
-	read_index -= 2
-	do {
-		b = points[read_index--]
-		ab = V2.sub(b, a)
-	} while (V2.eq(ab, [ 0, 0 ]))
-	hull.push({ point: b, incoming: ab })
+			for (;;) {
+				const isConvex = lt(V2.cross(ab, bc), ZERO)
+				if (isConvex) { break }
 
-	while (read_index >= 0) {
-		const c = points[read_index--]
-		let bc = V2.sub(c, b)
+				hull.pop()
+				const { point, incoming } = hull[hull.length - 1]
+				b = point
+				bc = V2.sub(c, b)
 
-		for (;;) {
-			const is_convex = V2.cross(ab, bc) < 0
-			if (is_convex) { break }
+				if (!incoming) { break }
+				ab = incoming
+			}
 
-			hull.pop()
-			const { point, incoming } = hull[hull.length - 1]
-			b = point
-			bc = V2.sub(c, b)
+			hull.push({ point: c, incoming: bc })
 
-			if (!incoming) { break }
-			ab = incoming
+			b = c
+			ab = bc
 		}
 
-		hull.push({ point: c, incoming: bc })
+		hull.pop()
+		if (hull.length < 3) { return null }
 
-		b = c
-		ab = bc
+		map.$$$(hull, ({ point }) => point)
+		return hull
 	}
 
-	hull.pop()
-	if (hull.length < 3) { return null }
+	return { convexHull }
+})
 
-	map.$$$(hull, ({ point }) => point)
-	return hull
-}
-
-module.exports = { convexHull }
+module.exports = { defineFor }

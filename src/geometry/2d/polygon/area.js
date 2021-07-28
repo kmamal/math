@@ -1,19 +1,28 @@
+const { memoize } = require('@kmamal/util/function/memoize')
 
-const area = (polygon) => {
-	const { length } = polygon
-	let sum = 0
-	let a_x = polygon[length - 2]
-	let a_y = polygon[length - 1]
-	for (let i = 0; i < length; i += 2) {
-		const b_x = polygon[i + 0]
-		const b_y = polygon[i + 1]
+const defineFor = memoize((Domain) => {
+	const { add, sub, mul, div, fromNumber } = Domain
+	const ZERO = fromNumber(0)
+	const TWO = fromNumber(2)
 
-		sum += (b_x - a_x) * (b_y + a_y)
+	const area = (polygon) => {
+		const { length } = polygon
+		let sum = ZERO
+		let ax = polygon[length - 2]
+		let ay = polygon[length - 1]
+		for (let i = 0; i < length; i += 2) {
+			const bx = polygon[i + 0]
+			const by = polygon[i + 1]
 
-		a_x = b_x
-		a_y = b_y
+			sum += mul(sub(bx, ax), add(by, ay))
+
+			ax = bx
+			ay = by
+		}
+		return div(sum, TWO)
 	}
-	return sum / 2
-}
 
-module.exports = { area }
+	return { area }
+})
+
+module.exports = { defineFor }

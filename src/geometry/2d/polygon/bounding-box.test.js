@@ -1,5 +1,6 @@
 const { test } = require('@kmamal/testing')
-const { boundingBox } = require('./bounding-box')
+const N = require('../../../domains/number')
+const { boundingBox } = require('./bounding-box').defineFor(N)
 
 test("geometry.polygon.boundingBox", (t) => {
 	/* eslint-disable comma-spacing */
