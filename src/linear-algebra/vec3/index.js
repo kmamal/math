@@ -91,6 +91,34 @@ const defineFor = memoize((Domain) => {
 	}
 	sub.$$$ = sub$$$
 
+	const mul = ([ ax, ay, az ], [ bx, by, bz ]) => [
+		_mul(ax, bx),
+		_mul(ay, by),
+		_mul(az, bz),
+	]
+	const mul$$$ = (a, [ bx, by, bz ]) => {
+		const [ ax, ay, az ] = a
+		a[X] = _mul(ax, bx)
+		a[Y] = _mul(ay, by)
+		a[Z] = _mul(az, bz)
+		return a
+	}
+	mul.$$$ = mul$$$
+
+	const div = ([ ax, ay, az ], [ bx, by, bz ]) => [
+		_div(ax, bx),
+		_div(ay, by),
+		_div(az, bz),
+	]
+	const div$$$ = (a, [ bx, by, bz ]) => {
+		const [ ax, ay, az ] = a
+		a[X] = _div(ax, bx)
+		a[Y] = _div(ay, by)
+		a[Z] = _div(az, bz)
+		return a
+	}
+	div.$$$ = div$$$
+
 	const dot = ([ ax, ay, az ], [ bx, by, bz ]) => _add(
 		_add(
 			_mul(ax, bx),
@@ -105,7 +133,7 @@ const defineFor = memoize((Domain) => {
 		_sub(_mul(ax, by), _mul(ay, bx)),
 	]
 
-	const angle = (a, b) => _acos(_max(-1, _min(1, _div(
+	const angle2 = (a, b) => _acos(_max(-1, _min(1, _div(
 		dot(a, b),
 		_mul(norm(a), norm(b)),
 	))))
@@ -155,7 +183,8 @@ const defineFor = memoize((Domain) => {
 
 	return {
 		...{ isFinite, isNaN },
-		...{ neg, abs, add, sub, dot, cross, angle },
+		...{ neg, abs, add, sub, mul, div },
+		...{ dot, cross, angle2 },
 		...{ eq, neq },
 		...{ scale, norm, normSquared, normalize },
 		...{ fromNumbers, toNumbers },

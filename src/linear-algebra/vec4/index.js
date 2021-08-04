@@ -97,6 +97,38 @@ const defineFor = memoize((Domain) => {
 	}
 	sub.$$$ = sub$$$
 
+	const mul = ([ ax, ay, az, aw ], [ bx, by, bz, bw ]) => [
+		_mul(ax, bx),
+		_mul(ay, by),
+		_mul(az, bz),
+		_mul(aw, bw),
+	]
+	const mul$$$ = (a, [ bx, by, bz, bw ]) => {
+		const [ ax, ay, az, aw ] = a
+		a[X] = _mul(ax, bx)
+		a[Y] = _mul(ay, by)
+		a[Z] = _mul(az, bz)
+		a[W] = _mul(aw, bw)
+		return a
+	}
+	mul.$$$ = mul$$$
+
+	const div = ([ ax, ay, az, aw ], [ bx, by, bz, bw ]) => [
+		_div(ax, bx),
+		_div(ay, by),
+		_div(az, bz),
+		_div(aw, bw),
+	]
+	const div$$$ = (a, [ bx, by, bz, bw ]) => {
+		const [ ax, ay, az, aw ] = a
+		a[X] = _div(ax, bx)
+		a[Y] = _div(ay, by)
+		a[Z] = _div(az, bz)
+		a[W] = _div(aw, bw)
+		return a
+	}
+	div.$$$ = div$$$
+
 	const dot = ([ ax, ay, az, aw ], [ bx, by, bz, bw ]) => _add(
 		_add(
 			_add(
@@ -159,7 +191,7 @@ const defineFor = memoize((Domain) => {
 
 	return {
 		...{ isFinite, isNaN },
-		...{ neg, abs, add, sub, dot },
+		...{ neg, abs, add, sub, mul, div, dot },
 		...{ eq, neq },
 		...{ scale, norm, normSquared, normalize },
 		...{ fromNumbers, toNumbers },
