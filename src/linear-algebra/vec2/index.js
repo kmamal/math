@@ -101,6 +101,40 @@ const defineFor = memoize((Domain) => {
 	sub.to = subTo
 	sub.$$$ = sub$$$
 
+	const mul = ([ ax, ay ], [ bx, by ]) => [
+		_mul(ax, bx),
+		_mul(ay, by),
+	]
+	const mulTo = (dst, [ ax, ay ], [ bx, by ]) => {
+		dst[0] = _mul(ax, bx)
+		dst[1] = _mul(ay, by)
+	}
+	const mul$$$ = (a, [ bx, by ]) => {
+		const [ ax, ay ] = a
+		a[X] = _mul(ax, bx)
+		a[Y] = _mul(ay, by)
+		return a
+	}
+	mul.to = mulTo
+	mul.$$$ = mul$$$
+
+	const div = ([ ax, ay ], [ bx, by ]) => [
+		_div(ax, bx),
+		_div(ay, by),
+	]
+	const divTo = (dst, [ ax, ay ], [ bx, by ]) => {
+		dst[0] = _div(ax, bx)
+		dst[1] = _div(ay, by)
+	}
+	const div$$$ = (a, [ bx, by ]) => {
+		const [ ax, ay ] = a
+		a[X] = _div(ax, bx)
+		a[Y] = _div(ay, by)
+		return a
+	}
+	div.to = divTo
+	div.$$$ = div$$$
+
 	const dot = ([ ax, ay ], [ bx, by ]) => _add(
 		_mul(ax, bx),
 		_mul(ay, by),
@@ -169,7 +203,8 @@ const defineFor = memoize((Domain) => {
 
 	return {
 		...{ isFinite, isNaN },
-		...{ neg, abs, add, sub, dot, cross, angle, angle2 },
+		...{ neg, abs, add, sub, mul, div },
+		...{ dot, cross, angle, angle2 },
 		...{ eq, neq },
 		...{ scale, norm, normSquared, normalize },
 		...{ copy, clone },
