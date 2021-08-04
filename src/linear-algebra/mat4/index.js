@@ -1,7 +1,7 @@
 /* eslint-disable array-element-newline */
 
 const { memoize } = require('@kmamal/util/function/memoize')
-const { swap } = require('@kmamal/util/array')
+const { swap } = require('@kmamal/util/array/swap')
 
 const M11 = 0
 const M21 = 1
