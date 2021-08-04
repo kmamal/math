@@ -32,6 +32,13 @@ const defineFor = memoize((Domain) => {
 		neq: _neq,
 	} = Domain
 
+	const identity = () => [
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1,
+	]
+
 	const isFinite = ([
 		m11, m21, m31, m41,
 		m12, m22, m32, m42,
@@ -425,6 +432,7 @@ const defineFor = memoize((Domain) => {
 	scale.$$$ = scale$$$
 
 	return {
+		...{ identity },
 		...{ isFinite, isNaN },
 		...{ neg, add, sub, mul, transpose, mulVector },
 		...{ eq, neq },

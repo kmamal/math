@@ -13,7 +13,7 @@ const M13 = 6
 const M23 = 7
 const M33 = 8
 
-const defineFor = (Domain) => {
+const defineFor = memoize((Domain) => {
 	const {
 		isFinite: _isFinite,
 		isNaN: _isNaN,
@@ -24,6 +24,12 @@ const defineFor = (Domain) => {
 		eq: _eq,
 		neq: _neq,
 	} = Domain
+
+	const identity = () => [
+		1, 0, 0,
+		0, 1, 0,
+		0, 0, 1,
+	]
 
 	const isFinite = ([
 		m11, m21, m31,
@@ -238,15 +244,15 @@ const defineFor = (Domain) => {
 
 	const mulVector = (
 		[
-			a11, a21, a31,
-			a12, a22, a32,
-			a13, a23, a33,
+			m11, m21, m31,
+			m12, m22, m32,
+			m13, m23, m33,
 		],
 		[ v1, v2, v3 ],
 	) => [
-		_add(_add(_mul(a11, v1), _mul(a21, v2)), _mul(a31, v3)),
-		_add(_add(_mul(a12, v1), _mul(a22, v2)), _mul(a32, v3)),
-		_add(_add(_mul(a13, v1), _mul(a23, v2)), _mul(a33, v3)),
+		_add(_add(_mul(m11, v1), _mul(m21, v2)), _mul(m31, v3)),
+		_add(_add(_mul(m12, v1), _mul(m22, v2)), _mul(m32, v3)),
+		_add(_add(_mul(m13, v1), _mul(m23, v2)), _mul(m33, v3)),
 	]
 
 	const mulVector$$$ = ([
@@ -329,11 +335,12 @@ const defineFor = (Domain) => {
 	scale.$$$ = scale$$$
 
 	return {
+		...{ identity },
 		...{ isFinite, isNaN },
 		...{ neg, add, sub, mul, transpose, mulVector },
 		...{ eq, neq },
 		...{ scale },
 	}
-}
+})
 
 module.exports = { defineFor }
