@@ -9,14 +9,14 @@ const defineFor = memoize((Domain) => {
 	const SDF = require('../sdf').defineFor(Domain)
 
 	const __quickhullConvexHull = (arr, _start, _end) => {
-		let stack
+		const stack = []
 		let writeIndex = _start
 
 		{
 			let left
 			let right
-			let leftX
-			let rightX
+			let leftX = Infinity
+			let rightX = -Infinity
 			for (let i = _start; i !== _end; i++) {
 				const point = arr[i]
 				const x = point[0]
@@ -38,13 +38,13 @@ const defineFor = memoize((Domain) => {
 				const point = arr[i]
 
 				if (V2.eq(point, left)) {
-					swap(i, writeIndex++)
+					swap(arr, i, writeIndex++)
 					continue
 				}
 
 				const d = SDF.point2halfplane(point, left, right)
 				if (gt(d, ZERO)) {
-					swap(i, writeIndex++)
+					swap(arr, i, writeIndex++)
 
 					if (gt(d, pAboveD)) {
 						pAbove = point
@@ -58,12 +58,8 @@ const defineFor = memoize((Domain) => {
 				}
 			}
 
-			if (pAbove === null && pBelow === null) { return null }
-
-			stack = [
-				 { a: right, b: left, p: pBelow, start: writeIndex, end: _end },
-				 { a: left, b: right, p: pAbove, start: 0, end: writeIndex },
-			]
+			pAbove && stack.push({ a: left, b: right, p: pAbove, start: 0, end: writeIndex })
+			pBelow && stack.push({ a: right, b: left, p: pBelow, start: writeIndex, end: _end })
 		}
 
 		writeIndex = _start
@@ -94,14 +90,14 @@ const defineFor = memoize((Domain) => {
 				const point = arr[i]
 
 				if (V2.eq(point, a)) {
-					swap(i, separator++)
+					swap(arr, i, separator++)
 					continue
 				}
 
 				const d1 = SDF.point2halfplane(point, a, p)
 				const d2 = SDF.point2halfplane(point, p, b)
 				if (gt(d1, 0)) {
-					swap(i, separator++)
+					swap(arr, i, separator++)
 
 					if (gt(d1, pLeftD)) {
 						pLeft = point
@@ -115,11 +111,11 @@ const defineFor = memoize((Domain) => {
 				}
 			}
 
-			stack.push({ a, b: p, p: pLeft, start, end: separator })
-			stack.push({ a: p, b, p: pRight, start: separator, end })
+			pLeft && stack.push({ a, b: p, p: pLeft, start, end: separator })
+			pRight && stack.push({ a: p, b, p: pRight, start: separator, end })
 		}
 
-		return writeIndex - _start
+		return writeIndex - _start || null
 	}
 
 	const quickhullConvexHull$$$ = (points) => {

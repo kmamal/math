@@ -6,7 +6,7 @@ const defineFor = memoize((Domain) => {
 	const V2 = require('../../../linear-algebra/vec2').defineFor(Domain)
 
 	const __jarvisMarchConvexHull = (dst, dstStart, src, srcStart, srcEnd) => {
-		const a = __min(src, srcStart, srcEnd, ([ x ]) => x)
+		const a = src[__min(src, srcStart, srcEnd, ([ x ]) => x).index]
 		let b = a
 		const ab = [ 0, 1 ]
 

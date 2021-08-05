@@ -1,5 +1,5 @@
 const { memoize } = require('@kmamal/util/function/memoize')
-const { __copy, __copyInplace } = require('@kmamal/util/array/copy')
+const { __copyInplace } = require('@kmamal/util/array/copy')
 const { clone } = require('@kmamal/util/array/clone')
 
 const defineFor = memoize((Domain) => {
@@ -10,7 +10,7 @@ const defineFor = memoize((Domain) => {
 	const __incrementConvexHull = (hull, hullStart, hullEnd, point) => {
 		let start = null
 		let end = null
-		let lastCross = -1
+		let lastCross = ZERO
 
 		let a = hull[hullEnd - 1]
 		const ab = new Array(2)
@@ -23,10 +23,12 @@ const defineFor = memoize((Domain) => {
 			V2.sub.to(ap, point, a)
 			const cross = V2.cross(ab, ap)
 
-			if (cross > 0) {
-				if (lte(lastCross, ZERO)) { start = readIndex - 2 }
+			console.log({ ab, ap, cross })
+
+			if (gt(cross, ZERO)) {
+				if (lte(lastCross, ZERO)) { start = readIndex - 1; console.log({ start }) }
 			} else if (lt(cross, ZERO)) {
-				if (gte(lastCross, ZERO)) { end = readIndex - 1 }
+				if (gte(lastCross, ZERO)) { end = readIndex - 2; console.log({ end }) }
 			}
 
 			a = b
@@ -36,19 +38,24 @@ const defineFor = memoize((Domain) => {
 		const length = hullEnd - hullStart
 		if (start === null) { return length }
 
-		if (end === null) { end = hullEnd - 1 }
+		start -= hullStart
+		start = (start + length) % length
+		start += hullStart
+
 		end -= hullStart
-		end = (end + hullEnd - 1) % hullEnd
+		end = (end + length) % length
 		end += hullStart
+
+		console.log({ start, end })
 
 		let numRemaining
 		if (start <= end) {
-			__copyInplace(hull, start + 2, end, hullEnd)
-			hull[start + 1] = point
+			__copyInplace(hull, start + 1, end, hullEnd)
+			hull[start] = point
 			numRemaining = length - (end - start)
 		} else {
-			__copy(hull, hullStart, hull, end, start + 1)
-			numRemaining = (start - end) + 1
+			__copyInplace(hull, hullStart, end, start)
+			numRemaining = start - end
 			hull[hullStart + numRemaining] = point
 		}
 
@@ -97,7 +104,9 @@ const defineFor = memoize((Domain) => {
 
 		while (readIndex !== srcEnd) {
 			const point = src[readIndex++]
+			console.log({ dst, dstStart, writeIndex, point })
 			writeIndex = __incrementConvexHull(dst, dstStart, writeIndex, point)
+			console.log({ dst, writeIndex })
 		}
 
 		return writeIndex
@@ -118,6 +127,7 @@ const defineFor = memoize((Domain) => {
 		const res = []
 		const n = __incrementalConvexHull(res, 0, points, 0, points.length)
 		if (n === null) { return null }
+		res.length = n
 		return res
 	}
 
