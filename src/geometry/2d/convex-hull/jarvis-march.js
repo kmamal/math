@@ -1,11 +1,11 @@
 const { memoize } = require('@kmamal/util/function/memoize')
-const { __min } = require('@kmamal/util/array')
+const { __min } = require('@kmamal/util/array/min')
 
 const defineFor = memoize((Domain) => {
 	const { eq, gt, lte } = Domain
 	const V2 = require('../../../linear-algebra/vec2').defineFor(Domain)
 
-	const __convexHull = (dst, dstStart, src, srcStart, srcEnd) => {
+	const __jarvisMarchConvexHull = (dst, dstStart, src, srcStart, srcEnd) => {
 		const a = __min(src, srcStart, srcEnd, ([ x ]) => x)
 		let b = a
 		const ab = [ 0, 1 ]
@@ -51,18 +51,18 @@ const defineFor = memoize((Domain) => {
 		return hullLength
 	}
 
-	const convexHull = (points) => {
+	const jarvisMarchConvexHull = (points) => {
 		const { length } = points
 		if (length < 3) { return null }
 		const res = []
-		const n = __convexHull(res, 0, points, 0, points.length)
+		const n = __jarvisMarchConvexHull(res, 0, points, 0, points.length)
 		if (n === null) { return null }
 		return res
 	}
 
 	return {
-		__convexHull,
-		convexHull,
+		__jarvisMarchConvexHull,
+		jarvisMarchConvexHull,
 	}
 })
 

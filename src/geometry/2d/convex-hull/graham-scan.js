@@ -10,7 +10,7 @@ const defineFor = memoize((Domain) => {
 	const V2 = require('../../../linear-algebra/vec2').defineFor(Domain)
 	const V2_ZERO = V2.fromNumbers(0, 0)
 
-	const __convexHull = (arr, start, end) => {
+	const __grahamScanConvexHull = (arr, start, end) => {
 		const a = __min(arr, start, end, ([ x ]) => x)
 
 		const [ ax, ay ] = a
@@ -76,25 +76,25 @@ const defineFor = memoize((Domain) => {
 		return hullLength
 	}
 
-	const convexHull$$$ = (points) => {
+	const grahamScanConvexHull$$$ = (points) => {
 		const { length } = points
 		if (length < 3) { return null }
-		const n = __convexHull(points, 0, points.length)
+		const n = __grahamScanConvexHull(points, 0, points.length)
 		if (n === null) { return null }
 		points.length = n
 		return points
 	}
 
-	const convexHull = (points) => {
+	const grahamScanConvexHull = (points) => {
 		const res = clone(points)
-		return convexHull$$$(res)
+		return grahamScanConvexHull$$$(res)
 	}
 
-	convexHull.$$$ = convexHull$$$
+	grahamScanConvexHull.$$$ = grahamScanConvexHull$$$
 
 	return {
-		__convexHull,
-		convexHull,
+		__grahamScanConvexHull,
+		grahamScanConvexHull,
 	}
 })
 

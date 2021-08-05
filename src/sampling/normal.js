@@ -1,11 +1,11 @@
 const { random } = require('@kmamal/util/random/random')
 
-let has_sample = false
+let hasSample = false
 let sample
 
 const sampleNormal = () => {
-	if (has_sample) {
-		has_sample = false
+	if (hasSample) {
+		hasSample = false
 		return sample
 	}
 
@@ -26,7 +26,7 @@ const sampleNormal = () => {
 	x2 *= f
 
 	sample = x1
-	has_sample = true
+	hasSample = true
 
 	return x2
 }

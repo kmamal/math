@@ -7,7 +7,7 @@ const defineFor = memoize((Domain) => {
 	const ZERO = fromNumber(0)
 	const V2 = require('../../../linear-algebra/vec2').defineFor(Domain)
 
-	const __increment = (hull, hullStart, hullEnd, point) => {
+	const __incrementConvexHull = (hull, hullStart, hullEnd, point) => {
 		let start = null
 		let end = null
 		let lastCross = -1
@@ -55,20 +55,20 @@ const defineFor = memoize((Domain) => {
 		return numRemaining + 1
 	}
 
-	const increment$$$ = (hull, point) => {
-		const n = __increment(hull, 0, hull.length, point)
+	const incrementConvexHull$$$ = (hull, point) => {
+		const n = __incrementConvexHull(hull, 0, hull.length, point)
 		hull.length = n
 		return hull
 	}
 
-	const increment = (hull, point) => {
+	const incrementConvexHull = (hull, point) => {
 		const res = clone(hull)
-		return increment$$$(res, point)
+		return incrementConvexHull$$$(res, point)
 	}
 
-	increment.$$$ = increment$$$
+	incrementConvexHull.$$$ = incrementConvexHull$$$
 
-	const __convexHull = (dst, dstStart, src, srcStart, srcEnd) => {
+	const __incrementalConvexHull = (dst, dstStart, src, srcStart, srcEnd) => {
 		let readIndex = srcStart
 		let writeIndex = dstStart
 		const a = src[readIndex++]
@@ -97,36 +97,36 @@ const defineFor = memoize((Domain) => {
 
 		while (readIndex !== srcEnd) {
 			const point = src[readIndex++]
-			writeIndex = __increment(dst, dstStart, writeIndex, point)
+			writeIndex = __incrementConvexHull(dst, dstStart, writeIndex, point)
 		}
 
 		return writeIndex
 	}
 
-	const convexHull$$$ = (points) => {
+	const incrementalConvexHull$$$ = (points) => {
 		const { length } = points
 		if (length < 3) { return null }
-		const n = __convexHull(points, 0, points, 0, points.length)
+		const n = __incrementalConvexHull(points, 0, points, 0, points.length)
 		if (n === null) { return null }
 		points.length = n
 		return points
 	}
 
-	const convexHull = (points) => {
+	const incrementalConvexHull = (points) => {
 		const { length } = points
 		if (length < 3) { return null }
 		const res = []
-		const n = __convexHull(res, 0, points, 0, points.length)
+		const n = __incrementalConvexHull(res, 0, points, 0, points.length)
 		if (n === null) { return null }
 		return res
 	}
 
-	convexHull.$$$ = convexHull$$$
+	incrementalConvexHull.$$$ = incrementalConvexHull$$$
 
 	return {
-		__increment,
-		increment,
-		convexHull,
+		__incrementConvexHull,
+		incrementConvexHull,
+		incrementalConvexHull,
 	}
 })
 

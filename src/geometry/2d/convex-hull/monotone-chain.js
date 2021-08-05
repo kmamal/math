@@ -9,7 +9,7 @@ const defineFor = memoize((Domain) => {
 	const V2 = require('../../../linear-algebra/vec2').defineFor(Domain)
 	const V2_ZERO = V2.fromNumbers(0, 0)
 
-	const convexHull = (_points) => {
+	const monotoneChainConvexHull = (_points) => {
 		const { length } = _points
 		if (length < 3) { return null }
 
@@ -93,7 +93,7 @@ const defineFor = memoize((Domain) => {
 		return hull
 	}
 
-	return { convexHull }
+	return { monotoneChainConvexHull }
 })
 
 module.exports = { defineFor }

@@ -8,7 +8,7 @@ const defineFor = memoize((Domain) => {
 	const V2 = require('../../../linear-algebra/vec2').defineFor(Domain)
 	const Distance = require('../distance').defineFor(Domain)
 
-	const __convexHull = (arr, _start, _end) => {
+	const __quickhullConvexHull = (arr, _start, _end) => {
 		let stack
 		let writeIndex = _start
 
@@ -122,30 +122,30 @@ const defineFor = memoize((Domain) => {
 		return writeIndex - _start
 	}
 
-	const convexHull$$$ = (points) => {
+	const quickhullConvexHull$$$ = (points) => {
 		const { length } = points
 		if (length < 3) { return null }
-		const n = __convexHull(points, 0, points.length)
+		const n = __quickhullConvexHull(points, 0, points.length)
 		if (n === null) { return null }
 		points.length = n
 		return points
 	}
 
-	const convexHull = (points) => {
+	const quickhullConvexHull = (points) => {
 		const { length } = points
 		if (length < 3) { return null }
 		const res = clone(points)
-		const n = __convexHull(res, 0, points.length)
+		const n = __quickhullConvexHull(res, 0, points.length)
 		if (n === null) { return null }
 		res.length = n
 		return res
 	}
 
-	convexHull.$$$ = convexHull$$$
+	quickhullConvexHull.$$$ = quickhullConvexHull$$$
 
 	return {
-		__convexHull,
-		convexHull,
+		__quickhullConvexHull,
+		quickhullConvexHull,
 	}
 })
 
