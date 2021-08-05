@@ -6,7 +6,7 @@ const defineFor = memoize((Domain) => {
 	const { lt, gt, fromNumber } = Domain
 	const ZERO = fromNumber(0)
 	const V2 = require('../../../linear-algebra/vec2').defineFor(Domain)
-	const Distance = require('../distance').defineFor(Domain)
+	const SDF = require('../sdf').defineFor(Domain)
 
 	const __quickhullConvexHull = (arr, _start, _end) => {
 		let stack
@@ -42,7 +42,7 @@ const defineFor = memoize((Domain) => {
 					continue
 				}
 
-				const d = Distance.point2halfplane(point, left, right)
+				const d = SDF.point2halfplane(point, left, right)
 				if (gt(d, ZERO)) {
 					swap(i, writeIndex++)
 
@@ -98,8 +98,8 @@ const defineFor = memoize((Domain) => {
 					continue
 				}
 
-				const d1 = Distance.point2halfplane(point, a, p)
-				const d2 = Distance.point2halfplane(point, p, b)
+				const d1 = SDF.point2halfplane(point, a, p)
+				const d2 = SDF.point2halfplane(point, p, b)
 				if (gt(d1, 0)) {
 					swap(i, separator++)
 
