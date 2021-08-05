@@ -3,7 +3,9 @@
 const { memoize } = require('@kmamal/util/function/memoize')
 
 const defineFor = memoize((Domain) => {
-	const { neg, add, mul, div, sqrt, sin, cos, acos } = Domain
+	const { neg, add, mul, div, sqrt, sin, cos, acos, fromNumber } = Domain
+	const ZERO = fromNumber(0)
+	const ONE = fromNumber(1)
 
 	const toMatrix = (translation, rotation, scaling) => {
 		const [ x, y ] = translation
@@ -14,7 +16,7 @@ const defineFor = memoize((Domain) => {
 		return [
 			mul(w, c), mul(h, neg(s)), x,
 			mul(w, s), mul(h, c), y,
-			0, 0, 1,
+			ZERO, ZERO, ONE,
 		]
 	}
 

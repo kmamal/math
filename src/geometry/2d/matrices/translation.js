@@ -2,11 +2,15 @@
 
 const { memoize } = require('@kmamal/util/function/memoize')
 
-const defineFor = memoize(() => {
+const defineFor = memoize((Domain) => {
+	const { fromNumber } = Domain
+	const ZERO = fromNumber(0)
+	const ONE = fromNumber(1)
+
 	const toMatrix = ([ x, y ]) => [
-		1, 0, x,
-		0, 1, y,
-		0, 0, 1,
+		ONE, ZERO, x,
+		ZERO, ONE, y,
+		ZERO, ZERO, ONE,
 	]
 
 	const fromMatrix = ([

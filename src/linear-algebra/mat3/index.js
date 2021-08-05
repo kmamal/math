@@ -21,9 +21,13 @@ const defineFor = memoize((Domain) => {
 		add: _add,
 		sub: _sub,
 		mul: _mul,
+		inverse: _inverse,
 		eq: _eq,
 		neq: _neq,
+		fromNumber: _fromNumber,
+		toNumber: _toNumber,
 	} = Domain
+	const _ZERO = _fromNumber(0)
 
 	const identity = () => [
 		1, 0, 0,
@@ -334,12 +338,163 @@ const defineFor = memoize((Domain) => {
 	}
 	scale.$$$ = scale$$$
 
+	const minor = ([
+		m11, m21, m31,
+		m12, m22, m32,
+		m13, m23, m33,
+	], i, j) => {
+		switch (i) {
+			case 0: switch (j) {
+				case 0: return _sub(_mul(m22, m33), _mul(m32, m23))
+				case 1: return _sub(_mul(m12, m33), _mul(m32, m13))
+				case 2: return _sub(_mul(m12, m23), _mul(m22, m13))
+				default: return null
+			}
+			case 1: switch (j) {
+				case 0: return _sub(_mul(m21, m33), _mul(m31, m23))
+				case 1: return _sub(_mul(m11, m33), _mul(m31, m13))
+				case 2: return _sub(_mul(m11, m23), _mul(m21, m13))
+				default: return null
+			}
+			case 2: switch (j) {
+				case 0: return _sub(_mul(m21, m32), _mul(m31, m22))
+				case 1: return _sub(_mul(m11, m32), _mul(m31, m12))
+				case 2: return _sub(_mul(m11, m22), _mul(m21, m12))
+				default: return null
+			}
+			default: return null
+		}
+	}
+
+	const cofactor = ([
+		m11, m21, m31,
+		m12, m22, m32,
+		m13, m23, m33,
+	], i, j) => {
+		switch (i) {
+			case 0: switch (j) {
+				case 0: return _sub(_mul(m22, m33), _mul(m32, m23))
+				case 1: return _neg(_sub(_mul(m12, m33), _mul(m32, m13)))
+				case 2: return _sub(_mul(m12, m23), _mul(m22, m13))
+				default: return null
+			}
+			case 1: switch (j) {
+				case 0: return _neg(_sub(_mul(m21, m33), _mul(m31, m23)))
+				case 1: return _sub(_mul(m11, m33), _mul(m31, m13))
+				case 2: return _neg(_sub(_mul(m11, m23), _mul(m21, m13)))
+				default: return null
+			}
+			case 2: switch (j) {
+				case 0: return _sub(_mul(m21, m32), _mul(m31, m22))
+				case 1: return _neg(_sub(_mul(m11, m32), _mul(m31, m12)))
+				case 2: return _sub(_mul(m11, m22), _mul(m21, m12))
+				default: return null
+			}
+			default: return null
+		}
+	}
+
+	const cofactors = ([
+		m11, m21, m31,
+		m12, m22, m32,
+		m13, m23, m33,
+	]) => [
+		_sub(_mul(m22, m33), _mul(m32, m23)),
+		_neg(_sub(_mul(m12, m33), _mul(m32, m13))),
+		_sub(_mul(m12, m23), _mul(m22, m13)),
+
+		_neg(_sub(_mul(m21, m33), _mul(m31, m23))),
+		_sub(_mul(m11, m33), _mul(m31, m13)),
+		_neg(_sub(_mul(m11, m23), _mul(m21, m13))),
+
+		_sub(_mul(m21, m32), _mul(m31, m22)),
+		_neg(_sub(_mul(m11, m32), _mul(m31, m12))),
+		_sub(_mul(m11, m22), _mul(m21, m12)),
+	]
+
+	const adjugate = ([
+		m11, m21, m31,
+		m12, m22, m32,
+		m13, m23, m33,
+	]) => [
+		_sub(_mul(m22, m33), _mul(m32, m23)),
+		_neg(_sub(_mul(m21, m33), _mul(m31, m23))),
+		_sub(_mul(m21, m32), _mul(m31, m22)),
+
+		_neg(_sub(_mul(m12, m33), _mul(m32, m13))),
+		_sub(_mul(m11, m33), _mul(m31, m13)),
+		_neg(_sub(_mul(m11, m32), _mul(m31, m12))),
+
+		_sub(_mul(m12, m23), _mul(m22, m13)),
+		_neg(_sub(_mul(m11, m23), _mul(m21, m13))),
+		_sub(_mul(m11, m22), _mul(m21, m12)),
+	]
+
+	const determinant = ([
+		m11, m21, m31,
+		m12, m22, m32,
+		m13, m23, m33,
+	]) => _add(
+		_sub(
+			_mul(m11, _sub(_mul(m22, m33), _mul(m32, m23))),
+			_mul(m21, _sub(_mul(m12, m33), _mul(m32, m13))),
+		),
+		_mul(m31, _sub(_mul(m12, m23), _mul(m22, m13))),
+	)
+
+	const inverse = (m) => {
+		const d = determinant(m)
+		if (_eq(d, _ZERO)) { return null }
+
+		const id = _inverse(d)
+		const [
+			m11, m21, m31,
+			m12, m22, m32,
+			m13, m23, m33,
+		] = m
+
+		return [
+			_mul(id, _sub(_mul(m22, m33), _mul(m32, m23))),
+			_mul(id, _neg(_sub(_mul(m21, m33), _mul(m31, m23)))),
+			_mul(id, _sub(_mul(m21, m32), _mul(m31, m22))),
+
+			_mul(id, _neg(_sub(_mul(m12, m33), _mul(m32, m13)))),
+			_mul(id, _sub(_mul(m11, m33), _mul(m31, m13))),
+			_mul(id, _neg(_sub(_mul(m11, m32), _mul(m31, m12)))),
+
+			_mul(id, _sub(_mul(m12, m23), _mul(m22, m13))),
+			_mul(id, _neg(_sub(_mul(m11, m23), _mul(m21, m13)))),
+			_mul(id, _sub(_mul(m11, m22), _mul(m21, m12))),
+		]
+	}
+
+	const fromNumbers = (
+		m11, m21, m31,
+		m12, m22, m32,
+		m13, m23, m33,
+	) => [
+		_fromNumber(m11), _fromNumber(m21), _fromNumber(m31),
+		_fromNumber(m12), _fromNumber(m22), _fromNumber(m32),
+		_fromNumber(m13), _fromNumber(m23), _fromNumber(m33),
+	]
+
+	const toNumbers = ([
+		m11, m21, m31,
+		m12, m22, m32,
+		m13, m23, m33,
+	]) => [
+		_toNumber(m11), _toNumber(m21), _toNumber(m31),
+		_toNumber(m12), _toNumber(m22), _toNumber(m32),
+		_toNumber(m13), _toNumber(m23), _toNumber(m33),
+	]
+
 	return {
 		...{ identity },
 		...{ isFinite, isNaN },
 		...{ neg, add, sub, mul, transpose, mulVector },
 		...{ eq, neq },
-		...{ scale },
+		...{ scale, determinant, inverse },
+		...{ fromNumbers, toNumbers },
 	}
 })
 

@@ -3,12 +3,14 @@
 const { memoize } = require('@kmamal/util/function/memoize')
 
 const defineFor = memoize((Domain) => {
-	const { add, mul, div, sqrt } = Domain
+	const { add, mul, div, sqrt, fromNumber } = Domain
+	const ZERO = fromNumber(0)
+	const ONE = fromNumber(1)
 
 	const toMatrix = ([ w, h ]) => [
-		w, 0, 0,
-		0, h, 0,
-		0, 0, 1,
+		w, ZERO, ZERO,
+		ZERO, h, ZERO,
+		ZERO, ZERO, ONE,
 	]
 
 	const fromMatrix = ([

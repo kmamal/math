@@ -30,6 +30,8 @@ const defineFor = memoize((Domain) => {
 		mul: _mul,
 		eq: _eq,
 		neq: _neq,
+		fromNumber: _fromNumber,
+		toNumber: _toNumber,
 	} = Domain
 
 	const identity = () => [
@@ -431,12 +433,33 @@ const defineFor = memoize((Domain) => {
 	}
 	scale.$$$ = scale$$$
 
+	const fromNumbers = (
+		m11, m21, m31,
+		m12, m22, m32,
+		m13, m23, m33,
+	) => [
+		_fromNumber(m11), _fromNumber(m21), _fromNumber(m31),
+		_fromNumber(m12), _fromNumber(m22), _fromNumber(m32),
+		_fromNumber(m13), _fromNumber(m23), _fromNumber(m33),
+	]
+
+	const toNumbers = ([
+		m11, m21, m31,
+		m12, m22, m32,
+		m13, m23, m33,
+	]) => [
+		_toNumber(m11), _toNumber(m21), _toNumber(m31),
+		_toNumber(m12), _toNumber(m22), _toNumber(m32),
+		_toNumber(m13), _toNumber(m23), _toNumber(m33),
+	]
+
 	return {
 		...{ identity },
 		...{ isFinite, isNaN },
 		...{ neg, add, sub, mul, transpose, mulVector },
 		...{ eq, neq },
 		...{ scale },
+		...{ fromNumbers, toNumbers },
 	}
 })
 

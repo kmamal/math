@@ -16,9 +16,13 @@ const defineFor = memoize((Domain) => {
 		add: _add,
 		sub: _sub,
 		mul: _mul,
+		inverse: _inverse,
 		eq: _eq,
 		neq: _neq,
+		fromNumber: _fromNumber,
+		toNumber: _toNumber,
 	} = Domain
+	const _ZERO = _fromNumber(0)
 
 	const identity = () => [
 		1, 0,
@@ -242,12 +246,76 @@ const defineFor = memoize((Domain) => {
 	}
 	scale.$$$ = scale$$$
 
+	const minor = (m, i, j) => m[(1 - i) * 2 + (1 - j)]
+
+	const cofactor = (m, i, j) => {
+		const factor = minor(m, i, j)
+		return i + j % 2 ? neg(factor) : factor
+	}
+
+	const cofactors = ([
+		m11, m21,
+		m12, m22,
+	]) => [
+		m22, _neg(m12),
+		_neg(m21), m11,
+	]
+
+	const adjugate = ([
+		m11, m21,
+		m12, m22,
+	]) => [
+		m22, _neg(m21),
+		_neg(m12), m11,
+	]
+
+	const determinant = ([
+		m11, m21,
+		m12, m22,
+	]) => _sub(_mul(m11, m22), _mul(m21, m12))
+
+	const inverse = (m) => {
+		const d = determinant(m)
+		if (_eq(d, _ZERO)) { return null }
+
+		const id = _inverse(d)
+		const [
+			m11, m21,
+			m12, m22,
+		] = m
+
+		return [
+			_mul(id, m22),
+			_mul(id, _neg(m21)),
+
+			_mul(id, _neg(m12)),
+			_mul(id, m11),
+		]
+	}
+
+	const fromNumbers = (
+		m11, m21,
+		m12, m22,
+	) => [
+		_fromNumber(m11), _fromNumber(m21),
+		_fromNumber(m12), _fromNumber(m22),
+	]
+
+	const toNumbers = ([
+		m11, m21,
+		m12, m22,
+	]) => [
+		_toNumber(m11), _toNumber(m21),
+		_toNumber(m12), _toNumber(m22),
+	]
+
 	return {
 		...{ identity },
 		...{ isFinite, isNaN },
 		...{ neg, add, sub, mul, transpose, mulVector },
 		...{ eq, neq },
-		...{ scale },
+		...{ scale, determinant, inverse },
+		...{ fromNumbers, toNumbers },
 	}
 })
 
