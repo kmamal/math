@@ -13,7 +13,7 @@
   "license": "MIT",
   "dependencies": {
     "@kmamal/testing": "^0.0.11",
-    "@kmamal/util": "^0.0.53"
+    "@kmamal/util": "^0.0.54"
   },
   "exports": {
     "./linear-algebra/_matrix": "./src/linear-algebra/_matrix/index.js",
