@@ -11,7 +11,7 @@ const defineFor = memoize((Domain) => {
 	const V2_ZERO = V2.fromNumbers(0, 0)
 
 	const __grahamScanConvexHull = (arr, start, end) => {
-		const a = __min(arr, start, end, ([ x ]) => x)
+		const a = __min(arr, start, end, ([ x ]) => x).value
 
 		const [ ax, ay ] = a
 		__map(arr, start, end, (point) => ({
