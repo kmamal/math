@@ -6,6 +6,8 @@ const defineFor = memoize((Domain) => {
 
 	const earClippingTriangulation = (polygon) => {
 		const { length } = polygon
+		if (length < 6) { return [] }
+
 		const n = length / 2
 
 		const remaining = new Array(n)

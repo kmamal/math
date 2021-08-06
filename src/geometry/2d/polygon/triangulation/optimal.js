@@ -9,6 +9,8 @@ const defineFor = memoize((Domain) => {
 
 	const optimalTriangulation = (polygon) => {
 		const { length } = polygon
+		if (length < 6) { return [] }
+
 		const n = length / 2
 		const weights = new LowerLeft(n - 1)
 
