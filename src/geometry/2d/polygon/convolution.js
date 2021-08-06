@@ -12,6 +12,25 @@ const defineFor = memoize((Domain) => {
 		const { length: aLength } = a
 		const { length: bLength } = b
 
+		if (aLength === 0) { return [] }
+		if (bLength === 0) { return [] }
+		if (aLength === 2) {
+			const res = new Array(bLength)
+			for (let i = 0; i < bLength; i += 2) {
+				res[i + 0] += b[i + 0] + a[0]
+				res[i + 1] += b[i + 1] + a[1]
+			}
+			return res
+		}
+		if (bLength === 2) {
+			const res = new Array(aLength)
+			for (let i = 0; i < aLength; i += 2) {
+				res[i + 0] = a[i + 0] + b[0]
+				res[i + 1] = a[i + 1] + b[1]
+			}
+			return res
+		}
+
 		let lastWasPositive
 
 		let aStart = aLength - 1
