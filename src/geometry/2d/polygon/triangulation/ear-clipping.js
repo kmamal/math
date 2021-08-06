@@ -4,7 +4,7 @@ const { binarySearch } = require('@kmamal/util/array/search/binary')
 const defineFor = memoize((Domain) => {
 	const { isInteriorEdge } = require('../is-interior-edge').defineFor(Domain)
 
-	const triangulate = (polygon) => {
+	const earClippingTriagulation = (polygon) => {
 		const { length } = polygon
 		const n = length / 2
 
@@ -41,7 +41,7 @@ const defineFor = memoize((Domain) => {
 		return triangles
 	}
 
-	return { triangulate }
+	return { earClippingTriagulation }
 })
 
 module.exports = { defineFor }

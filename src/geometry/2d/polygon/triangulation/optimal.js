@@ -7,7 +7,7 @@ const defineFor = memoize((Domain) => {
 	const V2 = require('../../../../linear-algebra/vec2').defineFor(Domain)
 	const { isInteriorEdge } = require('../is-interior-edge').defineFor(Domain)
 
-	const triangulate = (polygon) => {
+	const optimalTriangulation = (polygon) => {
 		const { length } = polygon
 		const n = length / 2
 		const weights = new LowerLeft(n - 1)
@@ -73,7 +73,7 @@ const defineFor = memoize((Domain) => {
 		return triangles
 	}
 
-	return { triangulate }
+	return { optimalTriangulation }
 })
 
 module.exports = { defineFor }

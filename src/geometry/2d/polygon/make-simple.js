@@ -70,6 +70,7 @@ const defineFor = memoize((Domain) => {
 
 	const makeSimple = (polygon) => {
 		const { length } = polygon
+		if (length <= 6) { return [ polygon ] }
 
 		// Polygon structs
 		const points = withHooks({
