@@ -8,10 +8,11 @@ const defineFor = memoize((Domain) => {
 	const { neg, sub, div, eq, lt, isNaN, fromNumber, NInfinity } = Domain
 	const ZERO = fromNumber(0)
 	const V2 = require('../../../linear-algebra/vec2').defineFor(Domain)
+	const ORIGIN = V2.fromNumbers(0, 0)
 
 	const _getSlope = (ax, ay, bx, by) => {
 		const slope = div(sub(by, ay), sub(bx, ax))
-		return isNaN(slope) ? NInfinity : neg(slope)
+		return isNaN(slope) ? slope : neg(slope)
 	}
 
 	const __grahamScanConvexHull = (arr, start, end) => {
@@ -22,19 +23,24 @@ const defineFor = memoize((Domain) => {
 			point,
 			value: _getSlope(ax, ay, point[0], point[1]),
 		}))
-		__sort(arr, start, end, (v, u) => sub(v.value, u.value))
+		__sort(arr, start, end, (v, u) => {
+			if (isNaN(v.value)) { return -1 }
+			if (isNaN(u.value)) { return 1 }
+			if (eq(v.value, u.value)) { return -1 }
+			return sub(v.value, u.value)
+		})
 
-		let readIndex = start + 1
-		let writeIndex = start + 1
+		const second = start + 1
+		let readIndex = second
+		let writeIndex = second
 		let obj
 		let b
-		for (;;) {
+		let ab = new Array(2)
+		do {
 			obj = arr[readIndex++]
-			if (eq(obj.value, NInfinity)) { continue }
 			b = obj.point
-			break
-		}
-		const ab = V2.sub(b, a)
+			V2.sub.to(ab, b, a)
+		} while (V2.eq(ab, ORIGIN))
 
 		arr[start].incoming = null
 
