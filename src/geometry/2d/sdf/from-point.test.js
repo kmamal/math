@@ -75,16 +75,25 @@ test("geometry.sdf.point2circle", (t) => {
 
 test("geometry.sdf.point2halfplane", (t) => {
 	floatEqual(t, D.point2halfplane([ -1, 1 ], [ -1, -1 ], [ 1, 1 ]), Math.sqrt(2))
+	floatEqual(t, D.point2halfplane([ -1, 1 ], [ 1, 1 ], [ -1, -1 ]), -Math.sqrt(2))
 	floatEqual(t, D.point2halfplane([ 0, 1 ], [ -1, -1 ], [ 1, 1 ]), Math.sqrt(2) / 2)
+	floatEqual(t, D.point2halfplane([ 0, 1 ], [ 1, 1 ], [ -1, -1 ]), -Math.sqrt(2) / 2)
 	floatEqual(t, D.point2halfplane([ 1, 1 ], [ -1, -1 ], [ 1, 1 ]), 0)
+	floatEqual(t, D.point2halfplane([ 1, 1 ], [ 1, 1 ], [ -1, -1 ]), 0)
 
 	floatEqual(t, D.point2halfplane([ -1, 0 ], [ -1, -1 ], [ 1, 1 ]), Math.sqrt(2) / 2)
+	floatEqual(t, D.point2halfplane([ -1, 0 ], [ 1, 1 ], [ -1, -1 ]), -Math.sqrt(2) / 2)
 	floatEqual(t, D.point2halfplane([ 0, 0 ], [ -1, -1 ], [ 1, 1 ]), 0)
+	floatEqual(t, D.point2halfplane([ 0, 0 ], [ 1, 1 ], [ -1, -1 ]), 0)
 	floatEqual(t, D.point2halfplane([ 1, 0 ], [ -1, -1 ], [ 1, 1 ]), -Math.sqrt(2) / 2)
+	floatEqual(t, D.point2halfplane([ 1, 0 ], [ 1, 1 ], [ -1, -1 ]), Math.sqrt(2) / 2)
 
 	floatEqual(t, D.point2halfplane([ -1, -1 ], [ -1, -1 ], [ 1, 1 ]), 0)
+	floatEqual(t, D.point2halfplane([ -1, -1 ], [ 1, 1 ], [ -1, -1 ]), 0)
 	floatEqual(t, D.point2halfplane([ 0, -1 ], [ -1, -1 ], [ 1, 1 ]), -Math.sqrt(2) / 2)
+	floatEqual(t, D.point2halfplane([ 0, -1 ], [ 1, 1 ], [ -1, -1 ]), Math.sqrt(2) / 2)
 	floatEqual(t, D.point2halfplane([ 1, -1 ], [ -1, -1 ], [ 1, 1 ]), -Math.sqrt(2))
+	floatEqual(t, D.point2halfplane([ 1, -1 ], [ 1, 1 ], [ -1, -1 ]), Math.sqrt(2))
 })
 
 test("geometry.sdf.point2lineSquared", (t) => {

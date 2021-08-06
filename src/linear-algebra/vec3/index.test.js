@@ -88,13 +88,13 @@ test("vec3.cross", (t) => {
 	t.equal(V3.cross([ 1, 1, 0 ], [ 0, 0, 1 ]), [ 1, -1, 0 ])
 })
 
-test("vec3.angle", (t) => {
-	t.equal(V3.angle([ 0, 0, 0 ], [ 0, 0, 0 ]), NaN)
-	t.equal(V3.angle([ 1, 1, 1 ], [ 0, 0, 0 ]), NaN)
-	floatEqual(t, V3.angle([ 1, 1, 1 ], [ 1, 1, 1 ]), 0)
-	floatEqual(t, V3.angle([ 0, 0, 1 ], [ 0, 0, -1 ]), Math.PI)
-	floatEqual(t, V3.angle([ 1, 1, 1 ], [ -1, -1, -1 ]), Math.PI)
-	floatEqual(t, V3.angle([ 1, 0, 0 ], [ 0, 0, 1 ]), Math.PI / 2)
+test("vec3.angle2", (t) => {
+	t.equal(V3.angle2([ 0, 0, 0 ], [ 0, 0, 0 ]), NaN)
+	t.equal(V3.angle2([ 1, 1, 1 ], [ 0, 0, 0 ]), NaN)
+	floatEqual(t, V3.angle2([ 1, 1, 1 ], [ 1, 1, 1 ]), 0)
+	floatEqual(t, V3.angle2([ 0, 0, 1 ], [ 0, 0, -1 ]), Math.PI)
+	floatEqual(t, V3.angle2([ 1, 1, 1 ], [ -1, -1, -1 ]), Math.PI)
+	floatEqual(t, V3.angle2([ 1, 0, 0 ], [ 0, 0, 1 ]), Math.PI / 2)
 })
 
 test("vec3.eq", (t) => {

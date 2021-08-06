@@ -2,54 +2,59 @@ const { memoize } = require('@kmamal/util/function/memoize')
 const { __point } = require('../polygon/point')
 
 const defineFor = memoize((Domain) => {
+	const { abs, neg, sub, mul, div, sqrt, max, min, gt, gte, lte, PInfinity, fromNumber } = Domain
+	const MINUS_ONE = fromNumber(-1)
+	const ZERO = fromNumber(0)
+	const ONE = fromNumber(1)
+	const TWO = fromNumber(2)
 	const V2 = require('../../../linear-algebra/vec2').defineFor(Domain)
 
 	const point2pointSquared = (a, b) => V2.normSquared(V2.sub(a, b))
 
-	const point2point = (a, b) => Math.sqrt(point2pointSquared(a, b))
+	const point2point = (a, b) => sqrt(point2pointSquared(a, b))
 
-	const point2circle = (p, r) => V2.norm(p) - r
+	const point2circle = (p, r) => sub(V2.norm(p), r)
 
 	const point2halfplane = (p, a, b) => {
 		const ab = V2.sub(b, a)
 		const ap = V2.sub(p, a)
-		return V2.cross(ab, ap) / V2.norm(ab)
+		return div(V2.cross(ab, ap), V2.norm(ab))
 	}
 
 	const point2lineSquared = (p, a, b) => {
 		const ab = V2.sub(b, a)
 		const ap = V2.sub(p, a)
 		const c = V2.cross(ab, ap)
-		return c * c / V2.normSquared(ab)
+		return div(mul(c, c), V2.normSquared(ab))
 	}
 
-	const point2line = (p, a, b) => Math.abs(point2halfplane(p, a, b))
+	const point2line = (p, a, b) => abs(point2halfplane(p, a, b))
 
 	const point2segmentSquared = (p, a, b) => {
 		const ab = V2.sub(b, a)
 		const ap = V2.sub(p, a)
-		const h = V2.dot(ap, ab) / V2.normSquared(ab)
-		const hClamped = Math.max(0, Math.min(1, h))
+		const h = div(V2.dot(ap, ab), V2.normSquared(ab))
+		const hClamped = max(0, min(1, h))
 		V2.scale.$$$(ab, hClamped)
 		return V2.normSquared(V2.sub.$$$(ap, ab))
 	}
 
-	const point2segment = (p, a, b) => Math.sqrt(point2segmentSquared(p, a, b))
+	const point2segment = (p, a, b) => sqrt(point2segmentSquared(p, a, b))
 
 	const point2box = ([ x, y ], w, h) => {
-		const dx = Math.abs(x) - w / 2
-		const dy = Math.abs(y) - h / 2
-		if (dx > 0) {
-			return dy > 0 ? V2.norm([ dx, dy ]) : dx
+		const dx = sub(abs(x), div(w, TWO))
+		const dy = sub(abs(y), div(h, TWO))
+		if (gt(dx, ZERO)) {
+			return gt(dy, ZERO) ? V2.norm([ dx, dy ]) : dx
 		}
-		return dy > 0 ? dy : Math.max(dx, dy)
+		return gt(dy, ZERO) ? dy : max(dx, dy)
 	}
 
 	const point2convex = (p, polygon) => {
 		const { length } = polygon
 
-		let sign = -1
-		let ds = Infinity
+		let sign = MINUS_ONE
+		let ds = PInfinity
 
 		const a = [
 			polygon[length - 2],
@@ -61,23 +66,23 @@ const defineFor = memoize((Domain) => {
 		for (let i = 0; i < length; i += 2) {
 			__point(b, polygon, i)
 
-			ds = Math.min(ds, point2segmentSquared(p, a, b))
+			ds = min(ds, point2segmentSquared(p, a, b))
 
 			V2.sub.to(ab, b, a)
 			V2.sub.to(ap, p, a)
-			const isInside = V2.cross(ab, ap) <= 0
-			if (!isInside) { sign = 1 }
+			const isInside = lte(V2.cross(ab, ap), ZERO)
+			if (!isInside) { sign = ONE }
 
 			V2.copy(a, b)
 		}
-		return sign * Math.sqrt(ds)
+		return mul(sign, sqrt(ds))
 	}
 
 	const point2polygon = (p, polygon) => {
 		const { length } = polygon
 
-		let sign = 1
-		let ds = Infinity
+		let sign = ONE
+		let ds = PInfinity
 
 		const py = p[1]
 		const a = [
@@ -90,23 +95,23 @@ const defineFor = memoize((Domain) => {
 		for (let i = 0; i < length; i += 2) {
 			__point(b, polygon, i)
 
-			ds = Math.min(ds, point2segmentSquared(p, a, b))
+			ds = min(ds, point2segmentSquared(p, a, b))
 
-			const startsAbove = a[1] >= py
-			const endsBelow = py > b[1]
+			const startsAbove = gte(a[1], py)
+			const endsBelow = gt(py, b[1])
 			V2.sub.to(ab, b, a)
 			V2.sub.to(ap, p, a)
-			const isInside = V2.cross(ab, ap) > 0
+			const isInside = gt(V2.cross(ab, ap), ZERO)
 			if (false
 			|| (startsAbove && endsBelow && isInside)
 			|| (!startsAbove && !endsBelow && !isInside)
 			) {
-				sign *= -1
+				sign = neg(sign)
 			}
 
 			V2.copy(a, b)
 		}
-		return sign * Math.sqrt(ds)
+		return mul(sign, sqrt(ds))
 	}
 
 	return {

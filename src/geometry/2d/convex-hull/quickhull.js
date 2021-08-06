@@ -10,70 +10,99 @@ const defineFor = memoize((Domain) => {
 
 	const __quickhullConvexHull = (arr, _start, _end) => {
 		const stack = []
-		let writeIndex = _start
+		let writeIndex
 
 		{
-			let left
-			let right
-			let leftX = Infinity
-			let rightX = -Infinity
-			for (let i = _start; i !== _end; i++) {
+			const _second = _start + 1
+			const _last = _end - 1
+
+			const first = arr[_start]
+			let left = first
+			let right = first
+			let leftX = first[0]
+			let rightX = first[0]
+			let leftIndex = _start
+			let rightIndex = _start
+			for (let i = _second; i !== _end; i++) {
 				const point = arr[i]
 				const x = point[0]
 				if (lt(x, leftX)) {
 					left = point
 					leftX = x
+					leftIndex = i
 				} else if (gt(x, rightX)) {
 					right = point
 					rightX = x
+					rightIndex = i
 				}
 			}
 
-			let pAbove
-			let pBelow
+			swap.$$$(arr, leftIndex, _start)
+			if (rightIndex === _start) { rightIndex = leftIndex }
+			swap.$$$(arr, rightIndex, _last)
+
+			console.log(arr)
+
+			writeIndex = _second
+
+			let pAbove = null
+			let pBelow = null
 			let pAboveD = -Infinity
 			let pBelowD = Infinity
-
-			for (let i = _start; i !== _end; i++) {
+			let pAboveIndex
+			for (let i = _second; i !== _last; i++) {
 				const point = arr[i]
-
-				if (V2.eq(point, left)) {
-					swap(arr, i, writeIndex++)
-					continue
-				}
 
 				const d = SDF.point2halfplane(point, left, right)
 				if (gt(d, ZERO)) {
-					swap(arr, i, writeIndex++)
-
 					if (gt(d, pAboveD)) {
 						pAbove = point
 						pAboveD = d
+						pAboveIndex = writeIndex
 					}
+
+					swap.$$$(arr, i, writeIndex++)
+					console.log("above", i, writeIndex - 1, arr)
 				} else if (lt(d, ZERO)) {
 					if (lt(d, pBelowD)) {
 						pBelow = point
 						pBelowD = d
+						swap.$$$(arr, i, _last - 1)
+						console.log("bottom", i, _last - 1, arr)
 					}
 				}
 			}
 
-			pAbove && stack.push({ a: left, b: right, p: pAbove, start: 0, end: writeIndex })
-			pBelow && stack.push({ a: right, b: left, p: pBelow, start: writeIndex, end: _end })
+			let startAbove
+			if (pAbove !== null) {
+				swap.$$$(arr, pAboveIndex, _second)
+				startAbove = _second + 1
+			} else {
+				startAbove = _second
+			}
+			const endBelow = pBelow ? _last - 1 : _last
+			stack.push({ a: right, b: left, p: pBelow, start: writeIndex, end: endBelow })
+			stack.push({ a: left, b: right, p: pAbove, start: startAbove, end: writeIndex })
 		}
 
 		writeIndex = _start
 
-		for (;;) {
+		while (stack.length > 0) {
 			const item = stack.pop()
-			if (!item) { break }
+			console.log(item)
+			console.log(arr)
 
 			const { a, b, p, start, end } = item
+			const second = start + 1
+			const last = end - 1
 
 			if (p === null) {
+				console.log(a)
 				arr[writeIndex++] = a
 				continue
-			} else if (end - start === 2) {
+			} else if (end - start === 0) {
+				console.log(a)
+				console.log(p)
 				arr[writeIndex++] = a
 				arr[writeIndex++] = p
 				continue
@@ -81,38 +110,43 @@ const defineFor = memoize((Domain) => {
 
 			let separator = start
 
-			let pLeft
-			let pRight
+			let pLeft = null
+			let pRight = null
 			let pLeftD = -Infinity
 			let pRightD = Infinity
-
+			let pLeftIndex
 			for (let i = start; i !== end; i++) {
 				const point = arr[i]
-
-				if (V2.eq(point, a)) {
-					swap(arr, i, separator++)
-					continue
-				}
 
 				const d1 = SDF.point2halfplane(point, a, p)
 				const d2 = SDF.point2halfplane(point, p, b)
 				if (gt(d1, 0)) {
-					swap(arr, i, separator++)
-
 					if (gt(d1, pLeftD)) {
 						pLeft = point
 						pLeftD = d1
+						pLeftIndex = separator
 					}
+
+					swap.$$$(arr, i, separator++)
 				} else if (gt(d2, ZERO)) {
 					if (lt(d2, pRightD)) {
 						pRight = point
 						pRightD = d2
+						swap.$$$(arr, i, last)
 					}
 				}
 			}
 
-			pLeft && stack.push({ a, b: p, p: pLeft, start, end: separator })
-			pRight && stack.push({ a: p, b, p: pRight, start: separator, end })
+			let startLeft
+			if (pLeft !== null) {
+				swap.$$$(arr, pLeftIndex, second)
+				startLeft = second
+			} else {
+				startLeft = start
+			}
+			const endRight = pRight ? last : end
+			stack.push({ a: p, b, p: pRight, start: separator, end: endRight })
+			stack.push({ a, b: p, p: pLeft, start: startLeft, end: separator })
 		}
 
 		return writeIndex - _start || null
