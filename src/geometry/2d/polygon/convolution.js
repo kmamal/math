@@ -17,8 +17,8 @@ const defineFor = memoize((Domain) => {
 		if (aLength === 2) {
 			const res = new Array(bLength)
 			for (let i = 0; i < bLength; i += 2) {
-				res[i + 0] += b[i + 0] + a[0]
-				res[i + 1] += b[i + 1] + a[1]
+				res[i + 0] = b[i + 0] + a[0]
+				res[i + 1] = b[i + 1] + a[1]
 			}
 			return res
 		}
