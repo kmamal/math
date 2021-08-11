@@ -1,7 +1,7 @@
 const { memoize } = require('@kmamal/util/function/memoize')
 
 const defineFor = memoize((Domain) => {
-	const Minkowski = require('../minkowski').defineFor(Domain)
+	const Minkowski = require('../polygon/minkowski').defineFor(Domain)
 	const Point = require('./from-point').defineFor(Domain)
 
 	const ORIGIN = [ 0, 0 ]
