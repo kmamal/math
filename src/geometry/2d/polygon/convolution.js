@@ -97,7 +97,7 @@ const defineFor = memoize((Domain) => {
 				V2.copy(lastEdge, aEdge)
 
 				ai = (ai + 2) % aLength
-				aFullTurn = ai === aStart
+				aFullTurn ||= ai === aStart
 				V2.copy(a1, a2)
 				__point(a2, a, ai)
 				V2.sub.to(aEdge, a2, a1)
@@ -113,7 +113,7 @@ const defineFor = memoize((Domain) => {
 				V2.copy(lastEdge, bEdge)
 
 				bi = (bi + 2) % bLength
-				bFullTurn = bi === bStart
+				bFullTurn ||= bi === bStart
 				V2.copy(b1, b2)
 				__point(b2, b, bi)
 				V2.sub.to(bEdge, b2, b1)

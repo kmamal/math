@@ -4,9 +4,9 @@ const { sortByPure } = require('@kmamal/util/array/sort')
 
 const defineFor = memoize((Domain) => {
 	const { neg } = Domain
-	const { convolution } = require('./polygon/convolution').defineFor(Domain)
-	const { makeSimple } = require('./polygon/make-simple').defineFor(Domain)
-	const { area } = require('./polygon/area').defineFor(Domain)
+	const { convolution } = require('./convolution').defineFor(Domain)
+	const { makeSimple } = require('./make-simple').defineFor(Domain)
+	const { area } = require('./area').defineFor(Domain)
 
 	const sumConvexConvex = (a, b) => convolution(a, b)
 
