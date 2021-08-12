@@ -2,7 +2,8 @@ const { memoize } = require('@kmamal/util/function/memoize')
 const { __point, point } = require('./point')
 
 const defineFor = memoize((Domain) => {
-	const { add } = Domain
+	const { abs, add, div, cos, fromNumber } = Domain
+	const TWO = fromNumber(2)
 	const V2 = require('../../../linear-algebra/vec2').defineFor(Domain)
 	const { edgeNormal, pointNormalFromEdgeNormals } = require('./normal').defineFor(Domain)
 
@@ -20,7 +21,7 @@ const defineFor = memoize((Domain) => {
 
 			const diff = pointNormalFromEdgeNormals(n1, n2)
 			const angle = V2.angle2(n1, n2)
-			V2.scale.$$$(diff, -amount / Math.abs(Math.cos(angle / 2)))
+			V2.scale.$$$(diff, div(amount, abs(cos(div(angle, TWO)))))
 
 			polygon[i + 0] = add(x, diff[0])
 			polygon[i + 1] = add(y, diff[1])
