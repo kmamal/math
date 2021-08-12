@@ -88,6 +88,7 @@
     "./geometry/2d/polygon/is-convex": "./src/geometry/2d/polygon/is-convex.js",
     "./geometry/2d/polygon/point": "./src/geometry/2d/polygon/point.js",
     "./geometry/2d/polygon/is-equal": "./src/geometry/2d/polygon/is-equal.js",
+    "./geometry/2d/polygon/centroid": "./src/geometry/2d/polygon/centroid.js",
     "./geometry/2d/polygon/area": "./src/geometry/2d/polygon/area.js",
     "./geometry/2d/polygon/make-simple": "./src/geometry/2d/polygon/make-simple.js",
     "./geometry/2d/polygon/offset": "./src/geometry/2d/polygon/offset.js",

@@ -4,20 +4,30 @@ const { __point, point } = require('./point')
 const defineFor = memoize((Domain) => {
 	const { add } = Domain
 	const V2 = require('../../../linear-algebra/vec2').defineFor(Domain)
-	const { edgeNormal, pointNormal } = require('./normal').defineFor(Domain)
+	const { edgeNormal, pointNormalFromEdgeNormals } = require('./normal').defineFor(Domain)
 
 	const offsetPoints$$$ = (polygon, amount) => {
-		if (polygon.length < 4) { return polygon }
+		const { length } = polygon
+		if (length < 4) { return polygon }
 
-		for (let i = 0; i < polygon.length; i += 2) {
+		let n1 = edgeNormal(polygon, length - 2)
+		let n2 = new Array(2)
+		for (let i = 0; i < length; i += 2) {
 			const x = polygon[i + 0]
 			const y = polygon[i + 1]
 
-			const diff = pointNormal(polygon, i)
-			V2.scale.$$$(diff, amount)
+			edgeNormal.to(n2, polygon, i)
+
+			const diff = pointNormalFromEdgeNormals(n1, n2)
+			const angle = V2.angle2(n1, n2)
+			V2.scale.$$$(diff, -amount / Math.abs(Math.cos(angle / 2)))
 
 			polygon[i + 0] = add(x, diff[0])
 			polygon[i + 1] = add(y, diff[1])
+
+			const tmp = n1
+			n1 = n2
+			n2 = tmp
 		}
 
 		return polygon
