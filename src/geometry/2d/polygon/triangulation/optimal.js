@@ -1,6 +1,6 @@
 const { memoize } = require('@kmamal/util/function/memoize')
 const { LowerLeft } = require('@kmamal/util/array/triangular')
-const { __point } = require('../point')
+const { point } = require('../point')
 
 const defineFor = memoize((Domain) => {
 	const { add, lt, PInfinity } = Domain
@@ -21,15 +21,15 @@ const defineFor = memoize((Domain) => {
 		let halfPrev = 0
 		for (let i = 2; i < length; i += 2) {
 			const halfI = i / 2
-			__point(a, polygon, i)
+			point.to(a, polygon, i)
 
-			__point(b, polygon, prev)
+			point.to(b, polygon, prev)
 			V2.sub.to(ab, b, a)
 			weights.set(halfI - 1, halfPrev, { w: V2.normSquared(ab), k: null })
 
 			for (let j = i - 4; j >= 0; j -= 2) {
 				const halfJ = j / 2
-				__point(b, polygon, j)
+				point.to(b, polygon, j)
 
 				if (!isInteriorEdge(polygon, i, j)) {
 					weights.set(halfI - 1, halfJ, Infinity)

@@ -1,5 +1,5 @@
 const { memoize } = require('@kmamal/util/function/memoize')
-const { __point } = require('../polygon/point')
+const { point } = require('../polygon/point')
 
 
 const defineFor = memoize((Domain) => {
@@ -43,7 +43,7 @@ const defineFor = memoize((Domain) => {
 
 		const p = new Array(2)
 		for (let i = 0; i < polygon.length; i += 2) {
-			__point(p, polygon, i)
+			point.to(p, polygon, i)
 			d = Math.min(d, Point.point2halfplane(p, a, b))
 		}
 

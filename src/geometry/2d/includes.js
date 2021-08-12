@@ -1,5 +1,5 @@
 const { memoize } = require('@kmamal/util/function/memoize')
-const { __point, point } = require('./polygon/point')
+const { point } = require('./polygon/point')
 
 const defineFor = memoize((Domain) => {
 	const { abs, mul, div, eq, lte, fromNumber } = Domain
@@ -46,7 +46,7 @@ const defineFor = memoize((Domain) => {
 		const a = point(polygon, length - 2)
 		const b = new Array(2)
 		for (let i = 0; i < polygon.length; i += 2) {
-			__point(b, polygon, i)
+			point.to(b, polygon, i)
 
 			if (!pointInHalfplane(p, a, b)) { return false }
 

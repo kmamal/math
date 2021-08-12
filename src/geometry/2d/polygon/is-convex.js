@@ -1,5 +1,5 @@
 const { memoize } = require('@kmamal/util/function/memoize')
-const { __point, point } = require('./point')
+const { point } = require('./point')
 
 
 const defineFor = memoize((Domain) => {
@@ -16,7 +16,7 @@ const defineFor = memoize((Domain) => {
 		const c = new Array(2)
 		const bc = new Array(2)
 		for (let i = 0; i < length; i += 2) {
-			__point(c, polygon, i)
+			point.to(c, polygon, i)
 
 			V2.sub.to(bc, c, b)
 			const cross = V2.cross(ab, bc)

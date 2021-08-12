@@ -1,5 +1,5 @@
 const { memoize } = require('@kmamal/util/function/memoize')
-const { __point, point } = require('./point')
+const { point } = require('./point')
 
 const defineFor = memoize((Domain) => {
 	const { sub, eq, lt, lte, fromNumber } = Domain
@@ -16,7 +16,7 @@ const defineFor = memoize((Domain) => {
 		const ab = new Array(2)
 		const ap = new Array(2)
 		for (let i = 0; i < length; i += 2) {
-			__point(b, polygon, i)
+			point.to(b, polygon, i)
 
 			checkEdge: {
 				V2.sub.to(ab, b, a)

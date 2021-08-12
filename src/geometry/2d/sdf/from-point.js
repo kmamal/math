@@ -1,5 +1,5 @@
 const { memoize } = require('@kmamal/util/function/memoize')
-const { __point } = require('../polygon/point')
+const { point } = require('../polygon/point')
 
 const defineFor = memoize((Domain) => {
 	const { abs, neg, sub, mul, div, sqrt, max, min, gt, gte, lte, PInfinity, fromNumber } = Domain
@@ -64,7 +64,7 @@ const defineFor = memoize((Domain) => {
 		const ab = new Array(2)
 		const ap = new Array(2)
 		for (let i = 0; i < length; i += 2) {
-			__point(b, polygon, i)
+			point.to(b, polygon, i)
 
 			ds = min(ds, point2segmentSquared(p, a, b))
 
@@ -93,7 +93,7 @@ const defineFor = memoize((Domain) => {
 		const ab = new Array(2)
 		const ap = new Array(2)
 		for (let i = 0; i < length; i += 2) {
-			__point(b, polygon, i)
+			point.to(b, polygon, i)
 
 			ds = min(ds, point2segmentSquared(p, a, b))
 

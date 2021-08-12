@@ -1,5 +1,7 @@
 const { test } = require('@kmamal/testing')
-const { reverse } = require('./reverse')
+const { defineFor } = require('./reverse')
+const N = require('../../../domains/number')
+const { reverse } = defineFor(N)
 
 test("geometry.polygon.reverse", (t) => {
 	/* eslint-disable comma-spacing */

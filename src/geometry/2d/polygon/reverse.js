@@ -2,8 +2,8 @@ const { swap } = require('@kmamal/util/array/swap')
 
 const reverse$$$ = (polygon) => {
 	for (let i = 0, j = polygon.length - 2; i < j; i += 2, j -= 2) {
-		swap(polygon, i + 0, j + 0)
-		swap(polygon, i + 1, j + 1)
+		swap.$$$(polygon, i + 0, j + 0)
+		swap.$$$(polygon, i + 1, j + 1)
 	}
 	return polygon
 }

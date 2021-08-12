@@ -1,5 +1,5 @@
 const { memoize } = require('@kmamal/util/function/memoize')
-const { __point, point } = require('./point')
+const { point } = require('./point')
 
 const defineFor = memoize((Domain) => {
 	const { sub, eq, gt, lt, lte, fromNumber } = Domain
@@ -39,7 +39,7 @@ const defineFor = memoize((Domain) => {
 		lastWasPositive = true
 		for (let i = 0; i <= aLength; i += 2) {
 			aStart = i % aLength
-			__point(a2, a, aStart)
+			point.to(a2, a, aStart)
 
 			const isPositive = gt(a2[1], a1[1])
 				|| (eq(a2[1], a1[1]) && lt(a2[0], a1[0]))
@@ -55,7 +55,7 @@ const defineFor = memoize((Domain) => {
 		lastWasPositive = true
 		for (let i = 0; i <= bLength; i += 2) {
 			bStart = i % bLength
-			__point(b2, b, bStart)
+			point.to(b2, b, bStart)
 
 			const isPositive = gt(b2[1], b1[1])
 				|| (eq(b2[1], b1[1]) && lt(b2[0], b1[0]))
@@ -99,7 +99,7 @@ const defineFor = memoize((Domain) => {
 				ai = (ai + 2) % aLength
 				aFullTurn ||= ai === aStart
 				V2.copy(a1, a2)
-				__point(a2, a, ai)
+				point.to(a2, a, ai)
 				V2.sub.to(aEdge, a2, a1)
 			} else {
 				lastUsed = ONE
@@ -115,7 +115,7 @@ const defineFor = memoize((Domain) => {
 				bi = (bi + 2) % bLength
 				bFullTurn ||= bi === bStart
 				V2.copy(b1, b2)
-				__point(b2, b, bi)
+				point.to(b2, b, bi)
 				V2.sub.to(bEdge, b2, b1)
 			}
 		}

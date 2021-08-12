@@ -1,5 +1,5 @@
 const { memoize } = require('@kmamal/util/function/memoize')
-const { __point, point } = require('./point')
+const { point } = require('./point')
 
 const defineFor = memoize((Domain) => {
 	const { lt, gte, lte, fromNumber } = Domain
@@ -40,19 +40,19 @@ const defineFor = memoize((Domain) => {
 			const d = new Array(2)
 
 			while (di < bi) {
-				__point(d, polygon, di)
+				point.to(d, polygon, di)
 				if (lte(SDF.segment2segment(a, b, c, d), ZERO)) { return false }
 				V2.copy(c, d)
 				di += 2
 			}
 
 			ci = (bi + 2) % length
-			__point(c, polygon, ci)
+			point.to(c, polygon, ci)
 			di = (ci + 2) % length
 
 			if (di > bi) {
 				while (di < length) {
-					__point(d, polygon, di)
+					point.to(d, polygon, di)
 					if (lte(SDF.segment2segment(a, b, c, d), ZERO)) { return false }
 					V2.copy(c, d)
 					di += 2
@@ -60,7 +60,7 @@ const defineFor = memoize((Domain) => {
 			}
 
 			while (di < ai) {
-				__point(d, polygon, di)
+				point.to(d, polygon, di)
 				if (lte(SDF.segment2segment(a, b, c, d), ZERO)) { return false }
 				V2.copy(c, d)
 				di += 2

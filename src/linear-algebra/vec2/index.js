@@ -40,6 +40,7 @@ const defineFor = memoize((Domain) => {
 	const negTo = (dst, [ x, y ]) => {
 		dst[0] = _neg(x)
 		dst[1] = _neg(y)
+		return dst
 	}
 	const neg$$$ = (a) => {
 		const [ x, y ] = a
@@ -57,6 +58,7 @@ const defineFor = memoize((Domain) => {
 	const absTo = (dst, [ x, y ]) => {
 		dst[0] = _abs(x)
 		dst[1] = _abs(y)
+		return dst
 	}
 	const abs$$$ = (a) => {
 		const [ x, y ] = a
@@ -74,6 +76,7 @@ const defineFor = memoize((Domain) => {
 	const addTo = (dst, [ ax, ay ], [ bx, by ]) => {
 		dst[0] = _add(ax, bx)
 		dst[1] = _add(ay, by)
+		return dst
 	}
 	const add$$$ = (a, [ bx, by ]) => {
 		const [ ax, ay ] = a
@@ -91,6 +94,7 @@ const defineFor = memoize((Domain) => {
 	const subTo = (dst, [ ax, ay ], [ bx, by ]) => {
 		dst[0] = _sub(ax, bx)
 		dst[1] = _sub(ay, by)
+		return dst
 	}
 	const sub$$$ = (a, [ bx, by ]) => {
 		const [ ax, ay ] = a
@@ -108,6 +112,7 @@ const defineFor = memoize((Domain) => {
 	const mulTo = (dst, [ ax, ay ], [ bx, by ]) => {
 		dst[0] = _mul(ax, bx)
 		dst[1] = _mul(ay, by)
+		return dst
 	}
 	const mul$$$ = (a, [ bx, by ]) => {
 		const [ ax, ay ] = a
@@ -125,6 +130,7 @@ const defineFor = memoize((Domain) => {
 	const divTo = (dst, [ ax, ay ], [ bx, by ]) => {
 		dst[0] = _div(ax, bx)
 		dst[1] = _div(ay, by)
+		return dst
 	}
 	const div$$$ = (a, [ bx, by ]) => {
 		const [ ax, ay ] = a
@@ -167,6 +173,7 @@ const defineFor = memoize((Domain) => {
 	const scaleTo = (dst, [ x, y ], v) => {
 		dst[0] = _mul(x, v)
 		dst[1] = _mul(y, v)
+		return dst
 	}
 	const scale$$$ = (a, v) => {
 		const [ x, y ] = a
