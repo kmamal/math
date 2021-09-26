@@ -1,6 +1,10 @@
 const { memoize } = require('@kmamal/util/function/memoize')
 
 const defineFor = memoize((Domain) => {
+	const { eq, lt, min, div, sqrt, fromNumber } = Domain
+	const MINUS_ONE = fromNumber(-1)
+	const ZERO = fromNumber(0)
+	const ONE = fromNumber(1)
 	const V2 = require('../../../linear-algebra/vec2').defineFor(Domain)
 	const Point = require('./from-point').defineFor(Domain)
 	const Convex = require('./from-convex').defineFor(Domain)
@@ -10,37 +14,41 @@ const defineFor = memoize((Domain) => {
 		const a2b2 = V2.sub(b2, a2)
 		const a2a1 = V2.sub(a1, a2)
 
-		let sign = -1
+		let sign = MINUS_ONE
 		findIintersection: {
 			const det = V2.cross(a1b1, a2b2)
-			if (det === 0) {
-				sign = 1
+			if (eq(det, ZERO)) {
+				sign = ONE
 				break findIintersection
 			}
 
 			const t1 = V2.cross(a2b2, a2a1) / det
-			if (t1 < 0 || 1 < t1) {
-				sign = 1
+			if (lt(t1, ZERO) || lt(ONE, t1)) {
+				sign = ONE
 				break findIintersection
 			}
 			const t2 = V2.cross(a1b1, a2a1) / det
-			if (t2 < 0 || 1 < t2) {
-				sign = 1
+			if (lt(t2, 0) || lt(1, t2)) {
+				sign = ONE
 				break findIintersection
 			}
 		}
 
-		return sign * Math.sqrt(Math.min(
-			Point.point2segmentSquared(a2, a1, b1),
-			Point.point2segmentSquared(b2, a1, b1),
-			Point.point2segmentSquared(a1, a2, b2),
-			Point.point2segmentSquared(b1, a2, b2),
-		))
+		return mul(sign, sqrt(min(
+			min(
+				Point.point2segmentSquared(a2, a1, b1),
+				Point.point2segmentSquared(b2, a1, b1),
+			),
+			min(
+				Point.point2segmentSquared(a1, a2, b2),
+				Point.point2segmentSquared(b1, a2, b2),
+			),
+		)))
 	}
 
 	const segment2box = (a, b, w, h) => {
-		const hw = w / 2
-		const hh = h / 2
+		const hw = div(w, 2)
+		const hh = div(h, 2)
 		/* eslint-disable comma-spacing */
 		const box = [ -hw,-hh, -hw,hh, hw,hh, hw,-hh ]
 		/* eslint-enable comma-spacing */

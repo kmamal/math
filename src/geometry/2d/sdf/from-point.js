@@ -34,7 +34,7 @@ const defineFor = memoize((Domain) => {
 		const ab = V2.sub(b, a)
 		const ap = V2.sub(p, a)
 		const h = div(V2.dot(ap, ab), V2.normSquared(ab))
-		const hClamped = max(0, min(1, h))
+		const hClamped = max(ZERO, min(ONE, h))
 		V2.scale.$$$(ab, hClamped)
 		return V2.normSquared(V2.sub.$$$(ap, ab))
 	}
