@@ -1,7 +1,7 @@
 const { memoize } = require('@kmamal/util/function/memoize')
 
 const defineFor = memoize((Domain) => {
-	const { eq, lt, min, div, sqrt, fromNumber } = Domain
+	const { eq, lt, min, mul, div, sqrt, fromNumber } = Domain
 	const MINUS_ONE = fromNumber(-1)
 	const ZERO = fromNumber(0)
 	const ONE = fromNumber(1)
@@ -22,13 +22,13 @@ const defineFor = memoize((Domain) => {
 				break findIintersection
 			}
 
-			const t1 = V2.cross(a2b2, a2a1) / det
+			const t1 = div(V2.cross(a2b2, a2a1), det)
 			if (lt(t1, ZERO) || lt(ONE, t1)) {
 				sign = ONE
 				break findIintersection
 			}
-			const t2 = V2.cross(a1b1, a2a1) / det
-			if (lt(t2, 0) || lt(1, t2)) {
+			const t2 = div(V2.cross(a1b1, a2a1), det)
+			if (lt(t2, ZERO) || lt(ONE, t2)) {
 				sign = ONE
 				break findIintersection
 			}
