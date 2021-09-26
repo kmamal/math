@@ -1,4 +1,4 @@
-const R = require('../../')
+const R = require('../../base')
 
 const base = 10
 

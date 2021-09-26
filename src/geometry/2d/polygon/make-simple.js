@@ -23,7 +23,7 @@ const defineFor = memoize((Domain) => {
 			const dpx = toNumber(sub(p1[0], p2[0]))
 			if (dpx !== 0) { return dpx }
 
-			return endpoint1.other ? -1 : 1
+			return endpoint1.closing ? 1 : -1
 		}
 	}
 
@@ -58,8 +58,8 @@ const defineFor = memoize((Domain) => {
 		edge.beta = point
 
 		point.edges.add(edge)
-		beta.edges.delete(edge)
 		point.edges.add(splinter)
+		beta.edges.delete(edge)
 		beta.edges.add(splinter)
 
 		return splinter
@@ -100,13 +100,16 @@ const defineFor = memoize((Domain) => {
 				alpha.edges.add(edge)
 				beta.edges.add(edge)
 
-				const aEndpoint = { point: alpha, edge, other: null }
-				const bEndpoint = { point: beta, edge, other: null }
+				const aEndpoint = { point: alpha, edge, other: null, closing: false }
+				const bEndpoint = { point: beta, edge, other: null, closing: false }
+				aEndpoint.other = bEndpoint
+				bEndpoint.other = aEndpoint
+
 				const downward = fnCmpEndpoints(aEndpoint, bEndpoint) < 0
 				if (downward) {
-					aEndpoint.other = bEndpoint
+					bEndpoint.closing = true
 				} else {
-					bEndpoint.other = aEndpoint
+					aEndpoint.closing = true
 				}
 				endpoints[index++] = aEndpoint
 				endpoints[index++] = bEndpoint
@@ -125,8 +128,9 @@ const defineFor = memoize((Domain) => {
 			const active = new Set()
 			while (endpoints.length > 0) {
 				const endpoint1 = popWith(endpoints, fnCmpEndpoints)
-				if (!endpoint1.other) {
-					active.delete(endpoint1)
+
+				if (endpoint1.closing) {
+					active.delete(endpoint1.other)
 					continue
 				}
 
@@ -156,8 +160,8 @@ const defineFor = memoize((Domain) => {
 					const { q, t1, t2 } = intersection
 					const point = points.get(q)
 
-					const shouldSplit1 = !eq(t1, ZERO) && !eq(t1, ONE)
-					const shouldSplit2 = !eq(t2, ZERO) && !eq(t2, ONE)
+					const shouldSplit1 = point !== alpha1 && point !== beta1
+					const shouldSplit2 = point !== alpha2 && point !== beta2
 
 					if (shouldSplit1) {
 						let splinter = splitEdge(edges, edge1, point)
@@ -171,10 +175,10 @@ const defineFor = memoize((Domain) => {
 							alpha1 = point
 						}
 
-						const newClose = { point, edge: edge1, other: null }
+						const newClose = { point, edge: edge1, other: endpoint1, closing: true }
 						addWith(endpoints, newClose, fnCmpEndpoints)
 
-						const newOpen = { point, edge: splinter, other: other1 }
+						const newOpen = { point, edge: splinter, other: other1, closing: false }
 						addWith(endpoints, newOpen, fnCmpEndpoints)
 
 						endpoint1.other = other1 = newClose
@@ -193,10 +197,10 @@ const defineFor = memoize((Domain) => {
 							splinter = tmp
 						}
 
-						const newClose = { point, edge: edge2, other: null }
+						const newClose = { point, edge: edge2, other: endpoint2, closing: true }
 						addWith(endpoints, newClose, fnCmpEndpoints)
 
-						const newOpen = { point, edge: splinter, other: other2 }
+						const newOpen = { point, edge: splinter, other: other2, closing: false }
 						addWith(endpoints, newOpen, fnCmpEndpoints)
 
 						endpoint2.other = newClose
@@ -220,16 +224,14 @@ const defineFor = memoize((Domain) => {
 					const e = point === alpha
 						? V2.sub(beta.p, alpha.p)
 						: V2.sub(alpha.p, beta.p)
-					edge.angle = toNumber(-V2.angle(e))
+					edge.angle = -toNumber(V2.angle(e))
 				}
 				sortByPure.$$$(arr, getAngle)
 			}
 
 			for (let i = 0; i < arr.length; i++) {
 				const edge = arr[i]
-				if (edge.alpha === point) {
-					edge.aIndex = i // TODO: unused???
-				} else {
+				if (edge.alpha !== point) {
 					edge.bIndex = i
 				}
 			}
@@ -265,6 +267,7 @@ const defineFor = memoize((Domain) => {
 						{
 							const betaEdges = beta.edges
 							let index = edge.bIndex
+
 							let counter = 1
 							while (counter > 0 || !edges.has(edge)) {
 								index = (index + 1) % betaEdges.length

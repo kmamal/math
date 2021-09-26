@@ -1,8 +1,8 @@
-const R = require('..')
+const R = require('../base')
 
 const { approximate } = require('./first-approximation/scalar')
 
-const N = 6
+const N = 20
 
 const sqrt = (a) => {
 	const { num: anum, den: aden } = a
@@ -17,8 +17,10 @@ const sqrt = (a) => {
 		const tden = aden * snum
 		snum = snum * tden + tnum * sden
 		sden = 2n * sden * tden
+		;({ num: snum, den: sden } = R.round({ num: snum, den: sden }, 128))
 	}
-	return { num: snum, den: sden }
+
+	return R.round({ num: snum, den: sden }, 64)
 }
 
 module.exports = { sqrt }

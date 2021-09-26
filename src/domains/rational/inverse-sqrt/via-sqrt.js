@@ -1,5 +1,6 @@
-const R = require('..')
+const R = require('../base')
+const { sqrt } = require('../sqrt/newton')
 
-const inverseSqrt = (a) => R.inverse(R.sqrt(a))
+const inverseSqrt = (a) => R.inverse(sqrt(a))
 
 module.exports = { inverseSqrt }

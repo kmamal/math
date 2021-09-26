@@ -1,4 +1,4 @@
-const R = require('..')
+const R = require('../base')
 
 const { approximate } = require('../sqrt/first-approximation/scalar')
 

@@ -1,4 +1,4 @@
-const { toNumber, fromNumber } = require('..')
+const { toNumber, fromNumber } = require('../base')
 
 const inverseSqrt = (rational) => {
 	const m = toNumber(rational)
