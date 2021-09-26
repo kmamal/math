@@ -25,6 +25,9 @@ const defineFor = memoize((Domain) => {
 		toNumber: _toNumber,
 	} = Domain
 
+	const ONE = _fromNumber(1)
+	const MINUS_ONE = _fromNumber(-1)
+
 	const isFinite = ([ x, y ]) => true
 		&& _isFinite(x)
 		&& _isFinite(y)
@@ -153,7 +156,7 @@ const defineFor = memoize((Domain) => {
 
 	const angle = ([ x, y ]) => x === 0 && y === 0 ? NaN : _atan2(y, x)
 
-	const angle2 = (a, b) => _acos(_max(-1, _min(1, _div(
+	const angle2 = (a, b) => _acos(_max(MINUS_ONE, _min(ONE, _div(
 		dot(a, b),
 		_mul(norm(a), norm(b)),
 	))))
@@ -177,8 +180,8 @@ const defineFor = memoize((Domain) => {
 	}
 	const scale$$$ = (a, v) => {
 		const [ x, y ] = a
-		a[X] = x * v
-		a[Y] = y * v
+		a[X] = _mul(x, v)
+		a[Y] = _mul(y, v)
 		return a
 	}
 	scale.to = scaleTo

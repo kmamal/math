@@ -14,6 +14,7 @@ const defineFor = memoize((Domain) => {
 		add: _add,
 		sub: _sub,
 		mul: _mul,
+		div: _div,
 		eq: _eq,
 		neq: _neq,
 		sqrt: _sqrt,
@@ -160,10 +161,10 @@ const defineFor = memoize((Domain) => {
 	]
 	const scale$$$ = (a, v) => {
 		const [ x, y, z, w ] = a
-		a[X] = x * v
-		a[Y] = y * v
-		a[Z] = z * v
-		a[W] = w * v
+		a[X] = _mul(x, v)
+		a[Y] = _mul(y, v)
+		a[Z] = _mul(z, v)
+		a[W] = _mul(w, v)
 		return a
 	}
 	scale.$$$ = scale$$$

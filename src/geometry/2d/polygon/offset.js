@@ -23,6 +23,7 @@ const defineFor = memoize((Domain) => {
 			const angle = V2.angle2(n1, n2)
 			V2.scale.$$$(diff, div(amount, abs(cos(div(angle, TWO)))))
 
+			console.log(x, y, diff)
 			polygon[i + 0] = add(x, diff[0])
 			polygon[i + 1] = add(y, diff[1])
 
