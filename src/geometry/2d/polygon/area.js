@@ -14,7 +14,7 @@ const defineFor = memoize((Domain) => {
 			const bx = polygon[i + 0]
 			const by = polygon[i + 1]
 
-			sum += mul(sub(bx, ax), add(by, ay))
+			sum = add(sum, mul(sub(bx, ax), add(by, ay)))
 
 			ax = bx
 			ay = by

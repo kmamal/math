@@ -139,6 +139,9 @@ const isFinite = (x) => x !== NAN
 	&& x !== P_INFINITY
 	&& x !== N_INFINITY
 
+const min = (x, y) => lte(x, y) ? x : y
+const max = (x, y) => gte(x, y) ? x : y
+
 const fromString = (s) => BigInt(s)
 
 const toString = (x) => {
@@ -166,7 +169,7 @@ module.exports = {
 	...{ PInfinity: P_INFINITY, NInfinity: N_INFINITY, NaN: NAN },
 	...{ isNaN, isFinite },
 	...{ sign, abs, neg, add, sub, mul, div, mod, pow, square },
-	...{ eq, neq, lt, gt, lte, gte },
+	...{ eq, neq, lt, gt, lte, gte, min, max },
 	...{ fromNumber, toNumber },
 	...{ fromString, toString },
 }

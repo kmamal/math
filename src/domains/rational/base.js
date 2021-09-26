@@ -119,6 +119,9 @@ const gt = (a, b) => lt(b, a)
 const lte = (a, b) => lt(a, b) || eq(a, b)
 const gte = (a, b) => lte(b, a)
 
+const min = (x, y) => lte(x, y) ? x : y
+const max = (x, y) => gte(x, y) ? x : y
+
 const _simplify = (num, den) => {
 	const signNum = num < 0 ? -1n : 1n
 	const signDen = den < 0 ? -1n : 1n
@@ -208,7 +211,7 @@ module.exports = {
 	...{ isFinite, isNaN },
 	...{ sign, abs, neg, add, sub, mul, div, mod, pow, square },
 	...{ floor, frac, inverse, round },
-	...{ eq, neq, lt, gt, lte, gte },
+	...{ eq, neq, lt, gt, lte, gte, min, max },
 	...{ fromFraction, fromInteger },
 	...{ fromNumber, toNumber },
 	...{ fromString, toString },
