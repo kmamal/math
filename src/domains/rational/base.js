@@ -209,7 +209,7 @@ const toString = (x) => {
 
 const from = (x, y) => {
 	if (y) { return fromFraction(I.from(x), I.from(y)) }
-	if (typeof x.num === 'bigint') { return x }
+	if (typeof x.num === 'bigint' && typeof x.den === 'bigint') { return x }
 	if (typeof x === 'bigint') { return fromInteger(x) }
 	if (typeof x === 'number') { return fromNumber(x) }
 	if (typeof x === 'string') { return fromString(x) }
