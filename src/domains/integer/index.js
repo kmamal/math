@@ -151,11 +151,11 @@ const toString = (x) => {
 	return x.toString()
 }
 
-const fromNumber = (v) => {
-	if (v === Infinity) { return P_INFINITY }
-	if (v === -Infinity) { return N_INFINITY }
-	if (Number.isNaN(v)) { return NAN }
-	return BigInt(v)
+const fromNumber = (x) => {
+	if (x === Infinity) { return P_INFINITY }
+	if (x === -Infinity) { return N_INFINITY }
+	if (Number.isNaN(x)) { return NAN }
+	return BigInt(x)
 }
 
 const toNumber = (x) => {
@@ -165,6 +165,18 @@ const toNumber = (x) => {
 	return Number(x)
 }
 
+const from = (x) => {
+	if (false
+		|| typeof x === 'bigint'
+		|| x === P_INFINITY
+		|| x === N_INFINITY
+		|| x === NAN
+	) { return x }
+	if (typeof x === 'number') { return fromNumber(x) }
+	if (typeof x === 'string') { return x }
+	return NAN
+}
+
 module.exports = {
 	...{ PInfinity: P_INFINITY, NInfinity: N_INFINITY, NaN: NAN },
 	...{ isNaN, isFinite },
@@ -172,4 +184,5 @@ module.exports = {
 	...{ eq, neq, lt, gt, lte, gte, min, max },
 	...{ fromNumber, toNumber },
 	...{ fromString, toString },
+	...{ from },
 }

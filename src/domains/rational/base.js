@@ -153,6 +153,7 @@ const fromNumber = (x) => {
 	if (x === Infinity) { return P_INFINITY }
 	if (x === -Infinity) { return N_INFINITY }
 	if (x === 0) { return { num: 0n, den: 1n } }
+	if (x === Math.floor(x)) { return fromInteger(BigInt(x)) }
 
 	const { sign: s, exponent: e, mantissa: m } = Float.parse(x)
 
@@ -206,6 +207,15 @@ const toString = (x) => {
 	return `${x.num}/${x.den}`
 }
 
+const from = (x, y) => {
+	if (y) { return fromFraction(I.from(x), I.from(y)) }
+	if (typeof x._num === 'bigint') { return x }
+	if (typeof x === 'bigint') { return fromInteger(x) }
+	if (typeof x === 'number') { return fromNumber(x) }
+	if (typeof x === 'string') { return fromString(x) }
+	return NAN
+}
+
 module.exports = {
 	...{ PInfinity: P_INFINITY, NInfinity: N_INFINITY, NaN: NAN },
 	...{ isFinite, isNaN },
@@ -215,4 +225,5 @@ module.exports = {
 	...{ fromFraction, fromInteger },
 	...{ fromNumber, toNumber },
 	...{ fromString, toString },
+	...{ from },
 }
