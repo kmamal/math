@@ -10,7 +10,10 @@ const N_INFINITY = { num: -1n, den: 0n }
 const NAN = { num: 0n, den: 0n }
 
 const isMember = (x) => false
-|| (I.isMember(x.num) && I.isMember(x.den))
+|| (true
+	&& typeof x === 'object'
+	&& I.isMember(x.num)
+	&& I.isMember(x.den))
 || x === P_INFINITY
 || x === N_INFINITY
 || x === NAN
