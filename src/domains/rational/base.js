@@ -11,6 +11,7 @@ const NAN = { num: 0n, den: 0n }
 
 const isMember = (x) => false
 || (true
+	&& x
 	&& typeof x === 'object'
 	&& I.isMember(x.num)
 	&& I.isMember(x.den))
