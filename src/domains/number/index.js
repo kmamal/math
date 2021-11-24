@@ -2,8 +2,10 @@ const arithmeticOrerators = require('@kmamal/util/operators/arithmetic')
 const comparisonOrerators = require('@kmamal/util/operators/comparison')
 const { identity } = require('@kmamal/util/function/identity')
 
-const isNaN = (a) => Number.isNaN(a)
-const isFinite = (a) => Number.isFinite(a)
+const isMember = (a) => typeof a === 'number'
+
+const isNaN = Number.isNaN
+const isFinite = Number.isFinite
 
 const inverse = (a) => 1 / a
 const square = (a) => a * a
@@ -23,7 +25,7 @@ const toNumber = identity
 
 module.exports = {
 	...{ PInfinity: Infinity, NInfinity: -Infinity, NaN },
-	...{ isNaN, isFinite },
+	...{ isMember, isNaN, isFinite },
 	...arithmeticOrerators,
 	...{ inverse, square, inverseSqrt },
 	...M,

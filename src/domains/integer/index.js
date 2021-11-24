@@ -4,6 +4,19 @@ const NAN = Symbol("NaN")
 
 const _getSignedInfinity = (x) => x < 0n ? N_INFINITY : P_INFINITY
 
+const isMember = (x) => false
+|| typeof x === 'bigint'
+|| x === P_INFINITY
+|| x === N_INFINITY
+|| x === NAN
+
+const isNaN = (x) => x === NAN
+const isFinite = (x) => true
+	&& isMember(x)
+	&& x !== NAN
+	&& x !== P_INFINITY
+	&& x !== N_INFINITY
+
 const sign = (x) => {
 	if (x === NAN) { return NAN }
 	if (x === P_INFINITY) { return 1n }
@@ -134,11 +147,6 @@ const lte = (a, b) => {
 }
 const gte = (a, b) => lte(b, a)
 
-const isNaN = (x) => neq(x, x)
-const isFinite = (x) => x !== NAN
-	&& x !== P_INFINITY
-	&& x !== N_INFINITY
-
 const min = (x, y) => lte(x, y) ? x : y
 const max = (x, y) => gte(x, y) ? x : y
 
@@ -166,12 +174,7 @@ const toNumber = (x) => {
 }
 
 const from = (x) => {
-	if (false
-		|| typeof x === 'bigint'
-		|| x === P_INFINITY
-		|| x === N_INFINITY
-		|| x === NAN
-	) { return x }
+	if (isMember(x)) { return x }
 	if (typeof x === 'number') { return fromNumber(x) }
 	if (typeof x === 'string') { return x }
 	return NAN
@@ -179,7 +182,7 @@ const from = (x) => {
 
 module.exports = {
 	...{ PInfinity: P_INFINITY, NInfinity: N_INFINITY, NaN: NAN },
-	...{ isNaN, isFinite },
+	...{ isMember, isNaN, isFinite },
 	...{ sign, abs, neg, add, sub, mul, div, mod, pow, square },
 	...{ eq, neq, lt, gt, lte, gte, min, max },
 	...{ fromNumber, toNumber },

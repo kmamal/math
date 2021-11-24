@@ -9,7 +9,13 @@ const P_INFINITY = { num: 1n, den: 0n }
 const N_INFINITY = { num: -1n, den: 0n }
 const NAN = { num: 0n, den: 0n }
 
-const isFinite = (x) => x.den !== 0n
+const isMember = (x) => false
+|| (I.isMember(x.num) && I.isMember(x.den))
+|| x === P_INFINITY
+|| x === N_INFINITY
+|| x === NAN
+
+const isFinite = (x) => isMember(x) && x.den !== 0n
 const isNaN = (x) => x.num === 0n && x.den === 0n
 
 const sign = (x) => I.sign(x.num)
@@ -209,7 +215,7 @@ const toString = (x) => {
 
 const from = (x, y) => {
 	if (y) { return fromFraction(I.from(x), I.from(y)) }
-	if (typeof x.num === 'bigint' && typeof x.den === 'bigint') { return x }
+	if (isMember(x)) { return x }
 	if (typeof x === 'bigint') { return fromInteger(x) }
 	if (typeof x === 'number') { return fromNumber(x) }
 	if (typeof x === 'string') { return fromString(x) }
@@ -218,7 +224,7 @@ const from = (x, y) => {
 
 module.exports = {
 	...{ PInfinity: P_INFINITY, NInfinity: N_INFINITY, NaN: NAN },
-	...{ isFinite, isNaN },
+	...{ isMember, isFinite, isNaN },
 	...{ sign, abs, neg, add, sub, mul, div, mod, pow, square },
 	...{ floor, frac, inverse, round },
 	...{ eq, neq, lt, gt, lte, gte, min, max },
