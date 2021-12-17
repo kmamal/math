@@ -55,8 +55,8 @@ const _cordicRotate = (a) => {
 
 		const nextX = R.sub(R.mul(x, c), R.mul(y, s))
 		const nextY = R.add(R.mul(x, s), R.mul(y, c))
-		x = R.round(nextX, 128)
-		y = R.round(nextY, 128)
+		x = R.roundTo(nextX, 128)
+		y = R.roundTo(nextY, 128)
 
 		angle = R.add(angle, increment)
 	}
@@ -83,7 +83,7 @@ const sin = (_a) => {
 	}
 
 	const { y } = _cordicRotate(a)
-	return R.round(neg ? R.neg(y) : y, 64)
+	return R.roundTo(neg ? R.neg(y) : y, 64)
 }
 
 const cos = (_a) => {
@@ -104,7 +104,7 @@ const cos = (_a) => {
 	}
 
 	const { x } = _cordicRotate(a)
-	return R.round(neg ? R.neg(x) : x, 64)
+	return R.roundTo(neg ? R.neg(x) : x, 64)
 }
 
 const tan = (_a) => {
@@ -124,7 +124,7 @@ const tan = (_a) => {
 
 	const { x, y } = _cordicRotate(a)
 	const d = R.div(y, x)
-	return R.round(neg ? R.neg(d) : d, 64)
+	return R.roundTo(neg ? R.neg(d) : d, 64)
 }
 
 // NOTE: input vector must be in [-PI/2,PI/2]
@@ -148,8 +148,8 @@ const _cordicVectorize = (_x, _y) => {
 
 		const nextX = R.sub(R.mul(x, c), R.mul(y, s))
 		const nextY = R.add(R.mul(x, s), R.mul(y, c))
-		x = R.round(nextX, 128)
-		y = R.round(nextY, 128)
+		x = R.roundTo(nextX, 128)
+		y = R.roundTo(nextY, 128)
 
 		angle = R.add(angle, increment)
 	}
@@ -164,7 +164,7 @@ const asin = (y) => {
 	const x = sqrt(R.sub(ONE, R.square(y)))
 
 	const a = _cordicVectorize(x, y)
-	return R.round(a, 64)
+	return R.roundTo(a, 64)
 }
 
 const acos = (_x) => {
@@ -182,7 +182,7 @@ const acos = (_x) => {
 	const y = sqrt(R.sub(ONE, R.square(x)))
 
 	const a = _cordicVectorize(x, y)
-	return R.round(neg ? R.sub(PI, a) : a, 64)
+	return R.roundTo(neg ? R.sub(PI, a) : a, 64)
 }
 
 const atan = (d) => {
@@ -210,7 +210,7 @@ const atan2 = (_y, _x) => {
 	}
 
 	const a = _cordicVectorize(x, y)
-	return R.round(
+	return R.roundTo(
 		neg
 			? both
 				? R.sub(a, PI)

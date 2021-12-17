@@ -17,10 +17,10 @@ const sqrt = (a) => {
 		const tden = aden * snum
 		snum = snum * tden + tnum * sden
 		sden = 2n * sden * tden
-		;({ num: snum, den: sden } = R.round({ num: snum, den: sden }, 128))
+		;({ num: snum, den: sden } = R.roundTo({ num: snum, den: sden }, 128))
 	}
 
-	return R.round({ num: snum, den: sden }, 64)
+	return R.roundTo({ num: snum, den: sden }, 64)
 }
 
 module.exports = { sqrt }

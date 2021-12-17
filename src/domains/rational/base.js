@@ -80,6 +80,28 @@ const pow = (x, e) => { // TODO: DOESNT WORK FOR NON-INTERGER EXPONENTS
 
 const floor = (x) => {
 	const whole = I.div(x.num, x.den)
+	if (x.num >= 0n) { return fromInteger(whole) }
+	const rest = I.mod(x.num, x.den)
+	return fromInteger(rest === 0n ? whole : whole - 1n)
+}
+
+const ceil = (x) => {
+	const whole = I.div(x.num, x.den)
+	if (x.num <= 0n) { return fromInteger(whole) }
+	const rest = I.mod(x.num, x.den)
+	return fromInteger(rest === 0n ? whole : whole + 1n)
+}
+
+const round = (x) => {
+	const whole = I.div(x.num, x.den)
+	const rest = I.mod(x.num, x.den)
+	return x.num >= 0n
+		? fromInteger(2n * rest >= x.den ? whole + 1n : whole)
+		: fromInteger(2n * -rest > x.den ? whole - 1n : whole)
+}
+
+const int = (x) => {
+	const whole = I.div(x.num, x.den)
 	return fromInteger(whole)
 }
 
@@ -89,7 +111,7 @@ const frac = (x) => {
 	return isFinite(fractional) ? fractional : NAN
 }
 
-const round = (x, bits) => {
+const roundTo = (x, bits) => {
 	const { num } = x
 	const s = num < 0 ? -1n : 1n
 	let absNum = s * num
@@ -229,8 +251,8 @@ const from = (x, y) => {
 module.exports = {
 	...{ PInfinity: P_INFINITY, NInfinity: N_INFINITY, NaN: NAN },
 	...{ isMember, isFinite, isNaN },
-	...{ sign, abs, neg, add, sub, mul, div, mod, pow, square },
-	...{ floor, frac, inverse, round },
+	...{ sign, abs, neg, add, sub, mul, div, inverse, mod, pow, square },
+	...{ floor, ceil, round, int, frac, roundTo },
 	...{ eq, neq, lt, gt, lte, gte, min, max },
 	...{ fromFraction, fromInteger },
 	...{ fromNumber, toNumber },
