@@ -154,7 +154,7 @@ const gte = (a, b) => lte(b, a)
 const min = (x, y) => lte(x, y) ? x : y
 const max = (x, y) => gte(x, y) ? x : y
 
-const _simplify = (num, den) => {
+const simplify = (num, den) => {
 	const signNum = num < 0 ? -1n : 1n
 	const signDen = den < 0 ? -1n : 1n
 	const s = signNum * signDen
@@ -175,7 +175,7 @@ const fromFraction = (num, den) => {
 		return I.lt(ratio, 0n) ? N_INFINITY : P_INFINITY
 	}
 
-	return _simplify(num, den)
+	return simplify(num, den)
 }
 
 const fromInteger = (x) => fromFraction(x, 1n)
@@ -198,7 +198,7 @@ const fromNumber = (x) => {
 		den <<= -shift
 	}
 
-	return _simplify(num, den)
+	return simplify(num, den)
 }
 
 const toNumber = (x) => {
@@ -257,5 +257,5 @@ module.exports = {
 	...{ fromFraction, fromInteger },
 	...{ fromNumber, toNumber },
 	...{ fromString, toString },
-	...{ from },
+	...{ from, simplify },
 }
