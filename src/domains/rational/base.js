@@ -155,6 +155,8 @@ const min = (x, y) => lte(x, y) ? x : y
 const max = (x, y) => gte(x, y) ? x : y
 
 const _simplify = (num, den) => {
+	if (den === 1n) { return { num, den } }
+
 	const signNum = num < 0 ? -1n : 1n
 	const signDen = den < 0 ? -1n : 1n
 	const s = signNum * signDen
