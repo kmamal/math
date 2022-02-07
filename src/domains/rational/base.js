@@ -22,7 +22,10 @@ const isMember = (x) => false
 const isFinite = (x) => isMember(x) && x.den !== 0n
 const isNaN = (x) => x.num === 0n && x.den === 0n
 
-const sign = (x) => I.sign(x.num)
+const sign = (x) => ({
+	num: I.sign(x.num),
+	den: 1n,
+})
 
 const abs = (x) => ({
 	num: I.abs(x.num),
