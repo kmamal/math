@@ -255,7 +255,7 @@ const _max = (a, b) => {
 const max = (a, b) => ec.max(a, b) ?? _max(a, b)
 
 const _fromFractionTo = (dst, _num, _den) => {
-	if (num === 0n) {
+	if (_num === 0n) {
 		dst.num = 0n
 		dst.den = 1n
 		return
