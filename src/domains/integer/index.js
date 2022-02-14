@@ -100,4 +100,5 @@ module.exports = {
 	...Domain,
 	isFinite: ec.isFinite,
 	isNaN: ec.isNaN,
+	edgeCases: ec,
 }

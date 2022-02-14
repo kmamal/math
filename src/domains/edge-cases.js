@@ -229,10 +229,7 @@ const defineFor = memoize((D) => {
 		if (x === NAN) { return I.NaN }
 	}
 
-	const fromFraction = (num, den, I) => {
-		const ec = defineFor(I)
-		return ec.div(num, den)
-	}
+	const fromFraction = (num, den, I) => I.edgeCases.div(num, den)
 
 	return {
 		...{ isNaN, isFinite },
