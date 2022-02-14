@@ -5,114 +5,187 @@ const Float = require('@kmamal/util/ieee-float/double')
 
 const TWO_POW_53 = 2 ** 53
 
-const P_INFINITY = { num: 1n, den: 0n }
-const N_INFINITY = { num: -1n, den: 0n }
-const NAN = { num: 0n, den: 0n }
+const P_INFINITY = Symbol("Infinity (Rational)")
+const N_INFINITY = Symbol("-Infinity (Rational)")
+const NAN = Symbol("NaN (Rational)")
 
-const isMember = (x) => false
-|| (true
+const _isMember = (x) => true
 	&& x
 	&& typeof x === 'object'
 	&& I.isMember(x.num)
-	&& I.isMember(x.den))
-|| x === P_INFINITY
-|| x === N_INFINITY
-|| x === NAN
+	&& I.isMember(x.den)
+const isMember = (x) => ec.isMember(x) ?? _isMember(x)
 
-const isFinite = (x) => isMember(x) && x.den !== 0n
-const isNaN = (x) => x.num === 0n && x.den === 0n
+const _signTo = (dst, x) => {
+	dst.num = I._sign(x.num)
+	dst.den = 1n
+}
+const _sign = (x) => {
+	const res = {}
+	_signTo(res, x)
+	return res
+}
+const sign = (x) => ec.sign(x) ?? _sign(x)
 
-const sign = (x) => ({
-	num: I.sign(x.num),
-	den: 1n,
-})
+const _absTo = (dst, x) => {
+	dst.num = I._abs(x.num)
+	dst.den = x.den
+}
+const _abs = (x) => {
+	const res = {}
+	_absTo(res, x)
+	return res
+}
+const abs = (x) => ec.abs(x) ?? _abs(x)
 
-const abs = (x) => ({
-	num: I.abs(x.num),
-	den: x.den,
-})
+const _negTo = (dst, x) => {
+	dst.num = -x.num
+	dst.den = x.den
+}
+const _neg = (x) => {
+	const res = {}
+	_negTo(res, x)
+	return res
+}
+const neg = (x) => ec.neg(x) ?? _neg(x)
 
-const neg = (x) => ({
-	num: -1n * x.num,
-	den: x.den,
-})
-
-const add = (a, b) => {
-	if (a === P_INFINITY && b === P_INFINITY) { return P_INFINITY }
-	if (a === N_INFINITY && b === N_INFINITY) { return N_INFINITY }
+const _addTo = (dst, a, b) => {
 	const num = a.num * b.den + b.num * a.den
 	const den = a.den * b.den
-	return fromFraction(num, den)
+	return _fromFractionTo(dst, num, den)
 }
+const _add = (a, b) => {
+	const res = {}
+	_addTo(res, a, b)
+	return res
+}
+const add = (a, b) => ec.add(a, b) ?? _add(a, b)
 
-const sub = (a, b) => {
-	if (a === P_INFINITY && b === N_INFINITY) { return P_INFINITY }
-	if (a === N_INFINITY && b === P_INFINITY) { return N_INFINITY }
+const _subTo = (dst, a, b) => {
 	const num = a.num * b.den - b.num * a.den
 	const den = a.den * b.den
-	return fromFraction(num, den)
+	return _fromFractionTo(dst, num, den)
 }
+const _sub = (a, b) => {
+	const res = {}
+	_subTo(res, a, b)
+	return res
+}
+const sub = (a, b) => ec.sub(a, b) ?? _sub(a, b)
 
-const mul = (a, b) => {
+const _mulTo = (dst, a, b) => {
 	const num = a.num * b.num
 	const den = a.den * b.den
-	return fromFraction(num, den)
+	return _fromFractionTo(dst, num, den)
 }
+const _mul = (a, b) => {
+	const res = {}
+	_mulTo(res, a, b)
+	return res
+}
+const mul = (a, b) => ec.mul(a, b) ?? _mul(a, b)
 
-const div = (a, b) => {
+const _divTo = (dst, a, b) => {
 	const num = a.num * b.den
 	const den = a.den * b.num
-	return fromFraction(num, den)
+	return _fromFractionTo(dst, num, den)
 }
+const _div = (a, b) => {
+	const res = {}
+	_divTo(res, a, b)
+	return res
+}
+const div = (a, b) => ec.div(a, b) ?? _div(a, b)
 
-const inverse = (x) => fromFraction(x.den, x.num)
-
-const mod = (a, b) => {
-	const num = I.mod(a.num * b.den, b.num * a.den)
+const _modTo = (dst, a, b) => {
+	const num = (a.num * b.den) % (b.num * a.den)
 	const den = a.den * b.den
-	return fromFraction(num, den)
+	return _fromFractionTo(dst, num, den)
 }
+const _mod = (a, b) => {
+	const res = {}
+	_modTo(res, a, b)
+	return res
+}
+const mod = (a, b) => ec.mod(a, b) ?? _mod(a, b)
 
+const _inverseTo = (dst, x) => _fromFractionTo(dst, x.den, x.num)
+const _inverse = (x) => {
+	const res = {}
+	_inverseTo(res, x)
+	return res
+}
+const inverse = (x) => ec.inverse(x) ?? _inverse(x)
+
+const _squareTo = (dst, x) => _mulTo(dst, x, x)
+const _square = (x) => {
+	const res = {}
+	_squareTo(res, x)
+	return res
+}
 const square = (x) => mul(x, x)
 
-const pow = (x, e) => { // TODO: DOESNT WORK FOR NON-INTERGER EXPONENTS
-	const num = I.pow(x.num, e)
-	const den = I.pow(x.den, e)
-	return fromFraction(num, den)
+const _floorTo = (dst, x) => {
+	const whole = x.num / x.den
+	if (x.num >= 0n) { return _fromIntegerTo(dst, whole) }
+	const rest = x.num % x.den
+	return _fromIntegerTo(dst, rest === 0n ? whole : whole - 1n)
 }
-
-const floor = (x) => {
-	const whole = I.div(x.num, x.den)
-	if (x.num >= 0n) { return fromInteger(whole) }
-	const rest = I.mod(x.num, x.den)
-	return fromInteger(rest === 0n ? whole : whole - 1n)
+const _floor = (x) => {
+	const res = {}
+	_floorTo(res, x)
+	return res
 }
+const floor = (x) => ec.floor(x) ?? _floor(x)
 
-const ceil = (x) => {
-	const whole = I.div(x.num, x.den)
-	if (x.num <= 0n) { return fromInteger(whole) }
-	const rest = I.mod(x.num, x.den)
-	return fromInteger(rest === 0n ? whole : whole + 1n)
+const _ceilTo = (dst, x) => {
+	const whole = x.num / x.den
+	if (x.num <= 0n) { return _fromIntegerTo(dst, whole) }
+	const rest = x.num % x.den
+	return _fromIntegerTo(dst, rest === 0n ? whole : whole + 1n)
 }
+const _ceil = (x) => {
+	const res = {}
+	_ceilTo(res, x)
+	return res
+}
+const ceil = (x) => ec.ceil(x) ?? _ceil(x)
 
-const round = (x) => {
-	const whole = I.div(x.num, x.den)
-	const rest = I.mod(x.num, x.den)
+const _roundTo = (dst, x) => {
+	const whole = x.num / x.den
+	const rest = x.num % x.den
 	return x.num >= 0n
-		? fromInteger(2n * rest >= x.den ? whole + 1n : whole)
-		: fromInteger(2n * -rest > x.den ? whole - 1n : whole)
+		? _fromIntegerTo(dst, 2n * rest >= x.den ? whole + 1n : whole)
+		: _fromIntegerTo(dst, 2n * -rest > x.den ? whole - 1n : whole)
 }
+const _round = (x) => {
+	const res = {}
+	_roundTo(res, x)
+	return res
+}
+const round = (x) => ec.round(x) ?? _round(x)
 
-const int = (x) => {
-	const whole = I.div(x.num, x.den)
-	return fromInteger(whole)
+const _intTo = (dst, x) => {
+	const whole = _toInteger(x)
+	return _fromIntegerTo(dst, whole)
 }
+const _int = (x) => {
+	const res = {}
+	_intTo(res, x)
+	return res
+}
+const int = (x) => ec.int(x) ?? _int(x)
 
-const frac = (x) => {
-	const rest = I.mod(x.num, x.den)
-	const fractional = fromFraction(rest, x.den)
-	return isFinite(fractional) ? fractional : NAN
+const _fracTo = (dst, x) => {
+	const rest = x.num % x.den
+	return _fromFractionTo(dst, rest, x.den)
 }
+const _frac = (x) => {
+	const res = {}
+	_fracTo(res, x)
+	return res
+}
+const frac = (x) => ec.frac(x) ?? _frac(x)
 
 const roundTo = (x, bits) => {
 	const { num } = x
@@ -135,62 +208,115 @@ const roundTo = (x, bits) => {
 	return fromFraction(s * absNum, den)
 }
 
-const eq = (a, b) => true
-  && !isNaN(a)
-  && !isNaN(b)
+const _eq = (a, b) => true
   && a.num === b.num
 	&& a.den === b.den
+const eq = (a, b) => ec.eq(a, b) ?? _eq(a, b)
 
+const _neq = (a, b) => false
+	|| a.num !== b.num
+	|| a.den !== b.den
 const neq = (a, b) => !eq(a, b)
 
-const lt = (a, b) => {
-	if (a === N_INFINITY && b === P_INFINITY) { return true }
-	const aValue = a.num * b.den
-	const bValue = b.num * a.den
-	return aValue < bValue
-}
+const _lt = (a, b) => a.num * b.den < b.num * a.den
+const lt = (a, b) => ec.lt(a, b) ?? _lt(a, b)
 
+const _gt = (a, b) => a.num * b.den > b.num * a.den
 const gt = (a, b) => lt(b, a)
-const lte = (a, b) => lt(a, b) || eq(a, b)
+
+const _lte = (a, b) => a.num * b.den <= b.num * a.den
+const lte = (a, b) => ec.lte(a, b) ?? _lte(a, b)
+
+const _gte = (a, b) => a.num * b.den >= b.num * a.den
 const gte = (a, b) => lte(b, a)
 
-const min = (x, y) => lte(x, y) ? x : y
-const max = (x, y) => gte(x, y) ? x : y
-
-const _simplify = (num, den) => {
-	if (den === 1n) { return { num, den } }
-
-	const signNum = num < 0 ? -1n : 1n
-	const signDen = den < 0 ? -1n : 1n
-	const s = signNum * signDen
-	const absNum = signNum * num
-	const absDen = signDen * den
-	const factor = gcd(absNum, absDen)
-	return {
-		num: s * absNum / factor,
-		den: absDen / factor,
-	}
+const _minTo = (dst, a, b) => {
+	const m = lte(a, b) ? a : b
+	dst.num = m.num
+	dst.den = m.den
 }
+const _min = (a, b) => {
+	const res = {}
+	_minTo(res, a, b)
+	return res
+}
+const min = (a, b) => ec.min(a, b) ?? _min(a, b)
 
-const fromFraction = (num, den) => {
-	const ratio = I.div(num, den)
-	if (I.isNaN(ratio)) { return NAN }
+const _maxTo = (dst, a, b) => {
+	const m = gte(a, b) ? a : b
+	dst.num = m.num
+	dst.den = m.den
+}
+const _max = (a, b) => {
+	const res = {}
+	_maxTo(res, a, b)
+	return res
+}
+const max = (a, b) => ec.max(a, b) ?? _max(a, b)
 
-	if (!I.isFinite(ratio)) {
-		return I.lt(ratio, 0n) ? N_INFINITY : P_INFINITY
+const _fromFractionTo = (dst, _num, _den) => {
+	if (num === 0n) {
+		dst.num = 0n
+		dst.den = 1n
+		return
 	}
 
-	return _simplify(num, den)
+	let num
+	let den
+	if (den > 0n) {
+		num = _num
+		den = _den
+	} else {
+		num = -_num
+		den = -_den
+	}
+
+	if (false
+		|| den === 1n
+		|| num === 1n
+		|| num === -1n
+	) {
+		dst.num = num
+		dst.den = den
+		return
+	}
+
+	const factor = I._abs(gcd(num, den))
+	dst.num = num / factor
+	dst.den = den / factor
 }
+const _fromFraction = (num, den) => {
+	const res = {}
+	_fromFractionTo(res, num, den)
+	return res
+}
+const fromFraction = (x, y) => ec.fromFraction(x, y, I) ?? _fromFraction(x, y)
 
-const fromInteger = (x) => fromFraction(x, 1n)
+const _fromIntegerTo = (dst, i) => {
+	dst.num = i
+	dst.den = 1n
+}
+const _fromInteger = (i) => {
+	const res = {}
+	_fromIntegerTo(res, i)
+	return res
+}
+const fromInteger = (i) => ec.fromInteger(i, I) ?? _fromInteger(i, 1n)
 
-const fromNumber = (x) => {
-	if (Number.isNaN(x)) { return NAN }
-	if (x === Infinity) { return P_INFINITY }
-	if (x === -Infinity) { return N_INFINITY }
-	if (x === 0) { return { num: 0n, den: 1n } }
-	if (x === Math.floor(x)) { return fromInteger(BigInt(x)) }
+const _toInteger = (x) => x.num / x.den
+const toInteger = (x) => ec.toInteger(x, I) ?? _toInteger(x)
+
+const _fromNumberTo = (dst, x) => {
+	if (x === 0) {
+		dst.num = 0
+		dst.den = 1
+		return
+	}
+
+	if (x === Math.floor(x)) {
+		_fromIntegerTo(dst, BigInt(x))
+		return
+	}
 
 	const { sign: s, exponent: e, mantissa: m } = Float.parse(x)
 
@@ -203,49 +329,63 @@ const fromNumber = (x) => {
 		den <<= -shift
 	}
 
-	return _simplify(num, den)
+	_fromFractionTo(dst, num, den)
 }
+const _fromNumber = (n) => {
+	const res = {}
+	_fromNumberTo(res, n)
+	return res
+}
+const fromNumber = (n) => ec.fromNumber(n) ?? _fromNumber(n)
 
-const toNumber = (x) => {
-	if (x === NAN) { return NaN }
-	if (x === P_INFINITY) { return Infinity }
-	if (x === N_INFINITY) { return -Infinity }
-
+const _toNumber = (x) => {
 	const { num, den } = x
-
 	if (num === 0n) { return 0 }
 
-	const s = num < 0n ? -1n : 1n
+	const s = I._sign(num)
 	const absNum = s * num
 	const overOne = absNum > den
 	const digits = overOne
-		? I.div(absNum << 53n, den)
-		: I.div(den << 53n, absNum)
+		? (absNum << 53n) / den
+		: (den << 53n) / absNum
 	const whole = digits >> 53n
 	const rest = digits - (whole << 53n)
 	const number = Number(s) * (Number(whole) + Number(rest) / TWO_POW_53)
 	return overOne ? number : 1 / number
 }
+const toNumber = (x) => ec.toNumber(x) ?? _toNumber(x)
 
+const _fromStringTo = (dst, s) => {
+	const bar = s.indexOf('/')
+	const snum = s.slice(0, bar)
+	const sden = s.slice(bar + 1)
+	const num = BigInt(snum)
+	const den = BigInt(sden)
+	return _fromFractionTo(dst, num, den)
+}
+const _fromString = (s) => {
+	const res = {}
+	this._fromStringTo(res, s)
+	return res
+}
 const fromString = (s) => {
-	const match = s.match(/^(?<num>-?\d+)\/(?<den>\d+)$/u)
+	const x = ec.fromString(s)
+	if (x !== undefined) { return x }
+
+	const match = s.match(/^(?<snum>-?\d+)\/(?<sden>\d+)$/u)
 	if (!match) { return NAN }
 
-	const { num, den } = match.groups
-	const _num = BigInt(num)
-	const _den = BigInt(den)
-	return fromFraction(_num, _den)
+	const { snum, sden } = match.groups
+	const num = BigInt(snum)
+	const den = BigInt(sden)
+	return fromFraction(num, den)
 }
 
-const toString = (x) => {
-	if (x === NAN) { return 'NaN' }
-	if (x === P_INFINITY) { return 'Infinity' }
-	if (x === N_INFINITY) { return '-Infinity' }
-	return `${x.num}/${x.den}`
-}
+const _toString = (x) => `${x.num}/${x.den}`
+const toString = (x) => ec.toString(x) ?? _toString(x)
 
 const from = (x, y) => {
-	if (y) { return fromFraction(I.from(x), I.from(y)) }
+	if (y !== undefined) { return fromFraction(I.from(x), I.from(y)) }
 	if (isMember(x)) { return x }
 	if (typeof x === 'bigint') { return fromInteger(x) }
 	if (typeof x === 'number') { return fromNumber(x) }
@@ -253,14 +393,45 @@ const from = (x, y) => {
 	return NAN
 }
 
-module.exports = {
+
+const Domain = {
 	...{ PInfinity: P_INFINITY, NInfinity: N_INFINITY, NaN: NAN },
-	...{ isMember, isFinite, isNaN },
-	...{ sign, abs, neg, add, sub, mul, div, inverse, mod, pow, square },
-	...{ floor, ceil, round, int, frac, roundTo },
-	...{ eq, neq, lt, gt, lte, gte, min, max },
-	...{ fromFraction, fromInteger },
-	...{ fromNumber, toNumber },
-	...{ fromString, toString },
+	...{ isMember },
+	...{ sign, _sign, _signTo },
+	...{ abs, _abs, _absTo },
+	...{ neg, _neg, _negTo },
+	...{ add, _add, _addTo },
+	...{ sub, _sub, _subTo },
+	...{ mul, _mul, _mulTo },
+	...{ div, _div, _divTo },
+	...{ mod, _mod, _modTo },
+	...{ inverse, _inverse, _inverseTo },
+	...{ square, _square, _squareTo },
+	...{ floor, _floor, _floorTo },
+	...{ ceil, _ceil, _ceilTo },
+	...{ round, _round, _roundTo },
+	...{ int, _int, _intTo },
+	...{ frac, _frac, _fracTo },
+	...{ roundTo },
+	...{ _eq, _neq, _lt, _gt, _lte, _gte },
+	...{ eq, neq, lt, gt, lte, gte },
+	...{ min, _min, _minTo },
+	...{ max, _max, _maxTo },
+	...{ toNumber, _toNumber },
+	...{ fromNumber, _fromNumber, _fromNumberTo },
+	...{ toString, _toString },
+	...{ fromString, _fromString, _fromStringTo },
+	...{ toInteger, _toInteger },
+	...{ fromInteger, _fromInteger, _fromIntegerTo },
+	...{ fromFraction, _fromFraction, _fromFractionTo },
 	...{ from },
+}
+
+const { defineFor: defineEdgeCasesFor } = require('../edge-cases')
+const ec = defineEdgeCasesFor(Domain)
+
+module.exports = {
+	...Domain,
+	isFinite: ec.isFinite,
+	isNaN: ec.isNaN,
 }

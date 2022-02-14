@@ -1,191 +1,103 @@
-const P_INFINITY = Symbol("Infinity")
-const N_INFINITY = Symbol("-Infinity")
-const NAN = Symbol("NaN")
+const P_INFINITY = Symbol("Infinity (Integer)")
+const N_INFINITY = Symbol("-Infinity (Integer)")
+const NAN = Symbol("NaN (Integer)")
 
-const _getSignedInfinity = (x) => x < 0n ? N_INFINITY : P_INFINITY
+const _isMember = (x) => typeof x === 'bigint'
+const isMember = (x) => ec.isMember(x) ?? _isMember(x)
 
-const isMember = (x) => false
-|| typeof x === 'bigint'
-|| x === P_INFINITY
-|| x === N_INFINITY
-|| x === NAN
+const _sign = (x) => x > 0n ? 1n : x < 0n ? -1n : 0n
+const sign = (x) => ec.sign(x) ?? _sign(x)
 
-const isNaN = (x) => x === NAN
-const isFinite = (x) => true
-	&& isMember(x)
-	&& x !== NAN
-	&& x !== P_INFINITY
-	&& x !== N_INFINITY
+const _neg = (x) => -x
+const neg = (x) => ec.neg(x) ?? _neg(x)
 
-const sign = (x) => {
-	if (x === NAN) { return NAN }
-	if (x === P_INFINITY) { return 1n }
-	if (x === N_INFINITY) { return -1n }
-	if (x > 0n) { return 1n }
-	if (x < 0n) { return -1n }
-	return 0n
-}
+const _abs = (x) => x < 0n ? -x : x
+const abs = (x) => ec.abs(x) ?? _abs(x)
 
-const abs = (x) => mul(sign(x), x)
+const _add = (a, b) => a + b
+const add = (a, b) => ec.add(a, b) ?? _add(a, b)
 
-const neg = (x) => {
-	if (x === NAN) { return NAN }
-	if (x === P_INFINITY) { return N_INFINITY }
-	if (x === N_INFINITY) { return P_INFINITY }
-	return -x
-}
+const _sub = (a, b) => a - b
+const sub = (a, b) => ec.sub(a, b) ?? _sub(a, b)
 
-const add = (a, b) => {
-	if (
-		(a === NAN || b === NAN)
-		|| (a === P_INFINITY && b === N_INFINITY)
-		|| (a === N_INFINITY && b === P_INFINITY)
-	) {
-		return NAN
-	}
-	if (a === P_INFINITY || b === P_INFINITY) { return P_INFINITY }
-	if (a === N_INFINITY || b === N_INFINITY) { return N_INFINITY }
-	return a + b
-}
+const _mul = (a, b) => a * b
+const mul = (a, b) => ec.mul(a, b) ?? _mul(a, b)
 
-const sub = (a, b) => {
-	if (
-		(a === NAN || b === NAN)
-		|| (a === P_INFINITY && b === P_INFINITY)
-		|| (a === N_INFINITY && b === N_INFINITY)
-	) {
-		return NAN
-	}
-	if (a === P_INFINITY || b === N_INFINITY) { return P_INFINITY }
-	if (a === N_INFINITY || b === P_INFINITY) { return N_INFINITY }
-	return a - b
-}
+const _div = (a, b) => a / b
+const div = (a, b) => ec.div(a, b) ?? _div(a, b)
 
-const mul = (a, b) => {
-	if (a === NAN || b === NAN) { return NAN }
-	if (a === P_INFINITY || a === N_INFINITY || b === P_INFINITY || b === N_INFINITY) {
-		return _getSignedInfinity(sign(a) * sign(b))
-	}
-	return a * b
-}
+const _mod = (a, b) => a % b
+const mod = (a, b) => ec.mod(a, b) ?? _mod(a, b)
 
-const div = (a, b) => {
-	if (
-		(a === NAN || b === NAN)
-		|| ((a === P_INFINITY || a === N_INFINITY) && (b === P_INFINITY || b === N_INFINITY))
-		|| (a === 0n && b === 0n)
-	) {
-		return NAN
-	}
-	if (a === P_INFINITY || a === N_INFINITY) {
-		return _getSignedInfinity(sign(a) * sign(b))
-	}
-	if (b === P_INFINITY || b === N_INFINITY) { return 0n }
-	if (b === 0n) { return _getSignedInfinity(sign(a)) }
-	return a / b
-}
+const _pow = (a, b) => a ** b
+const pow = (a, b) => ec.pow(a, b) ?? _pow(a, b)
 
-const mod = (a, b) => {
-	if (a === NAN || b === NAN || a === P_INFINITY || a === N_INFINITY || b === P_INFINITY || b === N_INFINITY || b === 0n) {
-		return NAN
-	}
-	return a % b
-}
-
-const pow = (a, b) => {
-	if (b === NAN) { return NAN }
-	if (b === 0) { return 1n }
-
-	if (a === NAN) { return NAN }
-
-	if (!isFinite(b)) {
-		const absBase = abs(a)
-		if (absBase === 1n) { return NAN }
-
-		const magnBase = sign(sub(absBase, 1n))
-		const signExp = sign(b)
-		return magnBase * signExp === -1n ? 0n : P_INFINITY
-	}
-
-	if (a === P_INFINITY) { return b > 0n ? P_INFINITY : 0n }
-	if (a === N_INFINITY) {
-		if (b < 0n) { return 0n }
-		const oddExp = b % 2 === 1
-		return _getSignedInfinity(oddExp ? -1n : 1n)
-	}
-
-	if (a === 0n) { return b > 0n ? 0n : P_INFINITY }
-
-	return a ** b
-}
-
+const _square = (x) => _mul(x, x)
 const square = (x) => mul(x, x)
 
-const eq = (a, b) => {
-	if (a === NAN && b === NAN) { return false }
-	return a === b
-}
+const _eq = (a, b) => a === b
+const eq = (a, b) => ec.eq(a, b) ?? _eq(a, b)
+
+const _neq = (a, b) => a !== b
 const neq = (a, b) => !eq(a, b)
 
-const lt = (a, b) => {
-	if (a === NAN || b === NAN) { return false }
-	if (a === P_INFINITY) { return false }
-	if (a === N_INFINITY) { return b !== N_INFINITY }
-	if (b === P_INFINITY) { return a !== P_INFINITY }
-	if (b === N_INFINITY) { return false }
-	return a < b
-}
+const _lt = (a, b) => a < b
+const lt = (a, b) => ec.lt(a, b) ?? _lt(a, b)
+
+const _gt = (a, b) => a > b
 const gt = (a, b) => lt(b, a)
 
-const lte = (a, b) => {
-	if (a === NAN || b === NAN) { return false }
-	if (a === P_INFINITY) { return false }
-	if (a === N_INFINITY) { return true }
-	if (b === P_INFINITY) { return true }
-	if (b === N_INFINITY) { return false }
-	return a <= b
-}
+const _lte = (a, b) => a <= b
+const lte = (a, b) => ec.lte(a, b) ?? _lte(a, b)
+
+const _gte = (a, b) => a >= b
 const gte = (a, b) => lte(b, a)
 
-const min = (x, y) => lte(x, y) ? x : y
-const max = (x, y) => gte(x, y) ? x : y
+const _min = (a, b) => a <= b ? a : b
+const min = (a, b) => ec.min(a, b) ?? _min(a, b)
 
-const fromString = (s) => BigInt(s)
+const _max = (a, b) => a <= b ? a : b
+const max = (a, b) => ec.min(a, b) ?? _max(a, b)
 
-const toString = (x) => {
-	if (x === P_INFINITY) { return 'Infinity' }
-	if (x === N_INFINITY) { return '-Infinity' }
-	if (x === NAN) { return 'NaN' }
-	return x.toString()
-}
+const _fromString = (s) => BigInt(s)
+const fromString = (s) => ec.fromString(s) ?? _fromString(s)
 
-const fromNumber = (x) => {
-	if (x === Infinity) { return P_INFINITY }
-	if (x === -Infinity) { return N_INFINITY }
-	if (Number.isNaN(x)) { return NAN }
-	return BigInt(x)
-}
+const _toString = (x) => x.toString()
+const toString = (x) => ec.toString(x) ?? _toString(x)
 
-const toNumber = (x) => {
-	if (x === P_INFINITY) { return Infinity }
-	if (x === N_INFINITY) { return -Infinity }
-	if (x === NAN) { return NaN }
-	return Number(x)
-}
+const _fromNumber = (n) => BigInt(n)
+const fromNumber = (n) => ec.fromNumber(n) ?? _fromNumber(n)
+
+const _toNumber = (x) => Number(x)
+const toNumber = (x) => ec.toNumber(x) ?? _toNumber(x)
 
 const from = (x) => {
 	if (isMember(x)) { return x }
 	if (typeof x === 'number') { return fromNumber(x) }
-	if (typeof x === 'string') { return x }
+	if (typeof x === 'string') { return fromString(x) }
 	return NAN
 }
 
-module.exports = {
+
+const Domain = {
 	...{ PInfinity: P_INFINITY, NInfinity: N_INFINITY, NaN: NAN },
-	...{ isMember, isNaN, isFinite },
+	...{ _isMember, isMember },
+	...{ _sign, _abs, _neg, _add, _sub, _mul, _div, _mod, _pow, _square },
 	...{ sign, abs, neg, add, sub, mul, div, mod, pow, square },
+	...{ _eq, _neq, _lt, _gt, _lte, _gte, _min, _max },
 	...{ eq, neq, lt, gt, lte, gte, min, max },
+	...{ _fromNumber, _toNumber },
 	...{ fromNumber, toNumber },
+	...{ _fromString, _toString },
 	...{ fromString, toString },
 	...{ from },
+}
+
+const { defineFor: defineEdgeCasesFor } = require('../edge-cases')
+const ec = defineEdgeCasesFor(Domain)
+
+module.exports = {
+	...Domain,
+	isFinite: ec.isFinite,
+	isNaN: ec.isNaN,
 }

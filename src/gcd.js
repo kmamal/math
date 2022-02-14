@@ -7,6 +7,10 @@ const defineFor = (Domain) => {
 		let a = _a
 		let b = _b
 
+		if (eq(a, ZERO) && eq(b, ZERO)) {
+			return ZERO
+		}
+
 		if (gt(a, b)) {
 			const t = a
 			a = b
