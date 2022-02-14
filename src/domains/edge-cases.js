@@ -231,7 +231,7 @@ const defineFor = memoize((D) => {
 
 	const fromFraction = (num, den, I) => {
 		const ec = defineFor(I)
-		return ec.dev(num, den)
+		return ec.div(num, den)
 	}
 
 	return {
