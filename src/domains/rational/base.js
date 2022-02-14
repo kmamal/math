@@ -308,8 +308,8 @@ const toInteger = (x) => ec.toInteger(x, I) ?? _toInteger(x)
 
 const _fromNumberTo = (dst, x) => {
 	if (x === 0) {
-		dst.num = 0
-		dst.den = 1
+		dst.num = 0n
+		dst.den = 1n
 		return
 	}
 
@@ -323,7 +323,7 @@ const _fromNumberTo = (dst, x) => {
 	let num = BigInt((s ? -1 : 1) * (m + Float.HIDDEN_BIT))
 	let den = 1n
 	const shift = BigInt(e - Float.EXPONENT_BIAS - Float.MANTISSA_BITS)
-	if (shift >= 0) {
+	if (shift >= 0n) {
 		num <<= shift
 	} else {
 		den <<= -shift
