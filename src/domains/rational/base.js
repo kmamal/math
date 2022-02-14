@@ -9,6 +9,15 @@ const P_INFINITY = Symbol("Infinity (Rational)")
 const N_INFINITY = Symbol("-Infinity (Rational)")
 const NAN = Symbol("NaN (Rational)")
 
+const _copy = (dst, src) => {
+	dst.num = src.num
+	dst.den = src.den
+}
+const _clone = (x) => ({
+	num: x.num,
+	den: x.den,
+})
+
 const _isMember = (x) => true
 	&& x
 	&& typeof x === 'object'
@@ -425,6 +434,7 @@ const Domain = {
 	...{ fromInteger, _fromInteger, _fromIntegerTo },
 	...{ fromFraction, _fromFraction, _fromFractionTo },
 	...{ from },
+	...{ _copy, _clone },
 }
 
 const { defineFor: defineEdgeCasesFor } = require('../edge-cases')
