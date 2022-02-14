@@ -61,7 +61,7 @@ const neg = (x) => ec.neg(x) ?? _neg(x)
 const _addTo = (dst, a, b) => {
 	const num = a.num * b.den + b.num * a.den
 	const den = a.den * b.den
-	return _fromFractionTo(dst, num, den)
+	_fromFractionTo(dst, num, den)
 }
 const _add = (a, b) => {
 	const res = {}
@@ -73,7 +73,7 @@ const add = (a, b) => ec.add(a, b) ?? _add(a, b)
 const _subTo = (dst, a, b) => {
 	const num = a.num * b.den - b.num * a.den
 	const den = a.den * b.den
-	return _fromFractionTo(dst, num, den)
+	_fromFractionTo(dst, num, den)
 }
 const _sub = (a, b) => {
 	const res = {}
@@ -85,7 +85,7 @@ const sub = (a, b) => ec.sub(a, b) ?? _sub(a, b)
 const _mulTo = (dst, a, b) => {
 	const num = a.num * b.num
 	const den = a.den * b.den
-	return _fromFractionTo(dst, num, den)
+	_fromFractionTo(dst, num, den)
 }
 const _mul = (a, b) => {
 	const res = {}
@@ -97,7 +97,7 @@ const mul = (a, b) => ec.mul(a, b) ?? _mul(a, b)
 const _divTo = (dst, a, b) => {
 	const num = a.num * b.den
 	const den = a.den * b.num
-	return _fromFractionTo(dst, num, den)
+	_fromFractionTo(dst, num, den)
 }
 const _div = (a, b) => {
 	const res = {}
@@ -109,7 +109,7 @@ const div = (a, b) => ec.div(a, b) ?? _div(a, b)
 const _modTo = (dst, a, b) => {
 	const num = (a.num * b.den) % (b.num * a.den)
 	const den = a.den * b.den
-	return _fromFractionTo(dst, num, den)
+	_fromFractionTo(dst, num, den)
 }
 const _mod = (a, b) => {
 	const res = {}
@@ -136,9 +136,9 @@ const square = (x) => mul(x, x)
 
 const _floorTo = (dst, x) => {
 	const whole = x.num / x.den
-	if (x.num >= 0n) { return _fromIntegerTo(dst, whole) }
+	if (x.num >= 0n) { _fromIntegerTo(dst, whole) }
 	const rest = x.num % x.den
-	return _fromIntegerTo(dst, rest === 0n ? whole : whole - 1n)
+	_fromIntegerTo(dst, rest === 0n ? whole : whole - 1n)
 }
 const _floor = (x) => {
 	const res = {}
@@ -149,9 +149,9 @@ const floor = (x) => ec.floor(x) ?? _floor(x)
 
 const _ceilTo = (dst, x) => {
 	const whole = x.num / x.den
-	if (x.num <= 0n) { return _fromIntegerTo(dst, whole) }
+	if (x.num <= 0n) { _fromIntegerTo(dst, whole) }
 	const rest = x.num % x.den
-	return _fromIntegerTo(dst, rest === 0n ? whole : whole + 1n)
+	_fromIntegerTo(dst, rest === 0n ? whole : whole + 1n)
 }
 const _ceil = (x) => {
 	const res = {}
@@ -176,7 +176,7 @@ const round = (x) => ec.round(x) ?? _round(x)
 
 const _intTo = (dst, x) => {
 	const whole = _toInteger(x)
-	return _fromIntegerTo(dst, whole)
+	_fromIntegerTo(dst, whole)
 }
 const _int = (x) => {
 	const res = {}
@@ -187,7 +187,7 @@ const int = (x) => ec.int(x) ?? _int(x)
 
 const _fracTo = (dst, x) => {
 	const rest = x.num % x.den
-	return _fromFractionTo(dst, rest, x.den)
+	_fromFractionTo(dst, rest, x.den)
 }
 const _frac = (x) => {
 	const res = {}
@@ -263,36 +263,24 @@ const _max = (a, b) => {
 }
 const max = (a, b) => ec.max(a, b) ?? _max(a, b)
 
-const _fromFractionTo = (dst, _num, _den) => {
-	if (_num === 0n) {
+const _fromFractionTo = (dst, num, den) => {
+	if (num === 0n) {
 		dst.num = 0n
 		dst.den = 1n
 		return
 	}
 
-	let num
-	let den
-	if (_den > 0n) {
-		num = _num
-		den = _den
-	} else {
-		num = -_num
-		den = -_den
+	const factor = gcd(num, den)
+	let rNum = num / factor
+	let rDen = den / factor
+
+	if (rDen < 0n) {
+		rNum = -rNum
+		rDen = -rDen
 	}
 
-	if (false
-		|| den === 1n
-		|| num === 1n
-		|| num === -1n
-	) {
-		dst.num = num
-		dst.den = den
-		return
-	}
-
-	const factor = I._abs(gcd(num, den))
-	dst.num = num / factor
-	dst.den = den / factor
+	dst.num = rNum
+	dst.den = rDen
 }
 const _fromFraction = (num, den) => {
 	const res = {}
@@ -370,7 +358,7 @@ const _fromStringTo = (dst, s) => {
 	const sden = s.slice(bar + 1)
 	const num = BigInt(snum)
 	const den = BigInt(sden)
-	return _fromFractionTo(dst, num, den)
+	_fromFractionTo(dst, num, den)
 }
 const _fromString = (s) => {
 	const res = {}
