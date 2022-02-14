@@ -281,9 +281,7 @@ const _fromFractionTo = (dst, _num, _den) => {
 		return
 	}
 
-	console.log(1, { num, den })
 	const factor = I._abs(gcd(num, den))
-	console.log(2)
 	dst.num = num / factor
 	dst.den = den / factor
 }
