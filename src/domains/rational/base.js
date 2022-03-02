@@ -135,10 +135,9 @@ const _square = (x) => {
 const square = (x) => mul(x, x)
 
 const _floorTo = (dst, x) => {
-	const whole = x.num / x.den
-	if (x.num >= 0n) { _fromIntegerTo(dst, whole) }
-	const rest = x.num % x.den
-	_fromIntegerTo(dst, rest === 0n ? whole : whole - 1n)
+	let whole = x.num / x.den
+	if (x.num < 0n && x.num % x.den !== 0n) { whole-- }
+	_fromIntegerTo(dst, whole)
 }
 const _floor = (x) => {
 	const res = {}
@@ -148,10 +147,9 @@ const _floor = (x) => {
 const floor = (x) => ec.floor(x) ?? _floor(x)
 
 const _ceilTo = (dst, x) => {
-	const whole = x.num / x.den
-	if (x.num <= 0n) { _fromIntegerTo(dst, whole) }
-	const rest = x.num % x.den
-	_fromIntegerTo(dst, rest === 0n ? whole : whole + 1n)
+	let whole = x.num / x.den
+	if (x.num > 0n && x.num % x.den !== 0n) { whole++ }
+	_fromIntegerTo(dst, whole)
 }
 const _ceil = (x) => {
 	const res = {}
@@ -393,7 +391,7 @@ const from = (x, y) => {
 
 const Domain = {
 	...{ PInfinity: P_INFINITY, NInfinity: N_INFINITY, NaN: NAN },
-	...{ isMember },
+	...{ isMember, _isMember },
 	...{ sign, _sign, _signTo },
 	...{ abs, _abs, _absTo },
 	...{ neg, _neg, _negTo },

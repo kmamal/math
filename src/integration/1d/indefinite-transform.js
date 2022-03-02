@@ -3,26 +3,26 @@
 
 // [-Inf, +Inf] -> [-1, 1]
 const transformIndefinite = (func) => (x) => {
-	const x2 = x * x
-	const one_over_sub = 1 / (1 - x2)
-	const y = x * one_over_sub
-	const c = (1 + x2) * one_over_sub * one_over_sub
+	const xSquared = x * x
+	const oneOver = 1 / (1 - xSquared)
+	const y = x * oneOver
+	const c = (1 + xSquared) * oneOver * oneOver
 	return func(y) * c
 }
 
 // [a, +Inf] -> [0, 1]
 const transformSemiPositive = (func, a) => (x) => {
-	const one_over_sub = 1 - x
-	const y = a + x * one_over_sub
-	const c = one_over_sub * one_over_sub
+	const oneOver = 1 / (1 - x)
+	const y = a + x * oneOver
+	const c = oneOver * oneOver
 	return func(y) * c
 }
 
 // [-Inf, a] -> [0, 1]
 const transformSemiNegative = (func, a) => (x) => {
-	const one_over_x = 1 / x
-	const y = a - (1 - x) * one_over_x
-	const c = one_over_x * one_over_x
+	const oneOver = 1 / x
+	const y = a - (1 - x) * oneOver
+	const c = oneOver * oneOver
 	return func(y) * c
 }
 

@@ -24,12 +24,12 @@ const __iterateGloballyAdaptive = (state, rule) => {
 	const { value: v1, error: e1 } = rule(from, mid)
 	const { value: v2, error: e2 } = rule(mid, to)
 
-	const delta_error = e1 + e2 - error
-	if (delta_error > 0) { return false }
-	state.error += delta_error
+	const deltaError = e1 + e2 - error
+	if (deltaError > 0) { return false }
+	state.error += deltaError
 
-	const delta_value = v1 + v2 - value
-	state.value += delta_value
+	const deltaValue = v1 + v2 - value
+	state.value += deltaValue
 
 	intervals.add(1 / e1, { from, to: mid, value: v1, error: e1 })
 	intervals.add(1 / e2, { from: mid, to, value: v2, error: e2 })

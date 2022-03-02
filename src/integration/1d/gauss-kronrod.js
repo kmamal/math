@@ -1,5 +1,10 @@
 
-/* eslint-disable one-var, one-var-declaration-per-line, sort-vars, no-multi-spaces */
+/* eslint-disable
+	one-var,
+	one-var-declaration-per-line,
+	sort-vars,
+	no-multi-spaces
+*/
 const /* A1 is zero */        K1 = 0.209482141084728, G1 = 0.417959183673469
 const A2 = 0.207784955007898, K2 = 0.204432940075298
 const A3 = 0.405845151377397, K3 = 0.190350578064785, G2 = 0.381830050505119
@@ -8,62 +13,67 @@ const A5 = 0.741531185599394, K5 = 0.140653259715525, G3 = 0.279705391489277
 const A6 = 0.864864423359769, K6 = 0.104790010322250
 const A7 = 0.949107912342759, K7 = 0.063092092629979, G4 = 0.129484966168870
 const A8 = 0.991455371120813, K8 = 0.022935322010529
-/* eslint-enable one-var, one-var-declaration-per-line, sort-vars, no-multi-spaces */
+/* eslint-enable
+	one-var,
+	one-var-declaration-per-line,
+	sort-vars,
+	no-multi-spaces
+*/
 
 const integrateGaussKronrod = (func, from, to) => {
 	let gauss = 0
 	let kronrod = 0
 
 	const mid = (from + to) / 2
-	const half_dx = (to - from) / 2
+	const halfDx = (to - from) / 2
 
-	const f_8 = func(mid)  // A1 is zero
-	gauss += G1 * f_8
-	kronrod += K1 * f_8
+	const f8 = func(mid)  // A1 is zero
+	gauss += G1 * f8
+	kronrod += K1 * f8
 
-	const f_7 = func(mid - A2 * half_dx)
-	const f_9 = func(mid + A2 * half_dx)
-	kronrod += K2 * f_7
-	kronrod += K2 * f_9
+	const f7 = func(mid - A2 * halfDx)
+	const f9 = func(mid + A2 * halfDx)
+	kronrod += K2 * f7
+	kronrod += K2 * f9
 
-	const f_6 = func(mid - A3 * half_dx)
-	const f_10 = func(mid + A3 * half_dx)
-	gauss += G2 * f_6
-	gauss += G2 * f_10
-	kronrod += K3 * f_6
-	kronrod += K3 * f_10
+	const f6 = func(mid - A3 * halfDx)
+	const f10 = func(mid + A3 * halfDx)
+	gauss += G2 * f6
+	gauss += G2 * f10
+	kronrod += K3 * f6
+	kronrod += K3 * f10
 
-	const f_5 = func(mid - A4 * half_dx)
-	const f_11 = func(mid + A4 * half_dx)
-	kronrod += K4 * f_5
-	kronrod += K4 * f_11
+	const f5 = func(mid - A4 * halfDx)
+	const f11 = func(mid + A4 * halfDx)
+	kronrod += K4 * f5
+	kronrod += K4 * f11
 
-	const f_4 = func(mid - A5 * half_dx)
-	const f_12 = func(mid + A5 * half_dx)
-	gauss += G3 * f_4
-	gauss += G3 * f_12
-	kronrod += K5 * f_4
-	kronrod += K5 * f_12
+	const f4 = func(mid - A5 * halfDx)
+	const f12 = func(mid + A5 * halfDx)
+	gauss += G3 * f4
+	gauss += G3 * f12
+	kronrod += K5 * f4
+	kronrod += K5 * f12
 
-	const f_3 = func(mid - A6 * half_dx)
-	const f_13 = func(mid + A6 * half_dx)
-	kronrod += K6 * f_3
-	kronrod += K6 * f_13
+	const f3 = func(mid - A6 * halfDx)
+	const f13 = func(mid + A6 * halfDx)
+	kronrod += K6 * f3
+	kronrod += K6 * f13
 
-	const f_2 = func(mid - A7 * half_dx)
-	const f_14 = func(mid + A7 * half_dx)
-	gauss += G4 * f_2
-	gauss += G4 * f_14
-	kronrod += K7 * f_2
-	kronrod += K7 * f_14
+	const f2 = func(mid - A7 * halfDx)
+	const f14 = func(mid + A7 * halfDx)
+	gauss += G4 * f2
+	gauss += G4 * f14
+	kronrod += K7 * f2
+	kronrod += K7 * f14
 
-	const f_1 = func(mid - A8 * half_dx)
-	const f_15 = func(mid + A8 * half_dx)
-	kronrod += K8 * f_1
-	kronrod += K8 * f_15
+	const f1 = func(mid - A8 * halfDx)
+	const f15 = func(mid + A8 * halfDx)
+	kronrod += K8 * f1
+	kronrod += K8 * f15
 
-	gauss *= half_dx
-	kronrod *= half_dx
+	gauss *= halfDx
+	kronrod *= halfDx
 
 	return { gauss, kronrod }
 }

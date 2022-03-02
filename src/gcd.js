@@ -1,24 +1,26 @@
 
 const defineFor = (Domain) => {
-	const { _eq, _gt, _mod } = Domain
+	const eq = Domain._eq ?? Domain.eq
+	const gt = Domain._gt ?? Domain.gt
+	const mod = Domain._mod ?? Domain.mod
 	const ZERO = Domain.fromNumber(0)
 
 	return (_a, _b) => {
 		let a = _a
 		let b = _b
 
-		if (_eq(a, ZERO) && _eq(b, ZERO)) {
+		if (eq(a, ZERO) && eq(b, ZERO)) {
 			return ZERO
 		}
 
-		if (_gt(a, b)) {
+		if (gt(a, b)) {
 			const t = a
 			a = b
 			b = t
 		}
 
-		while (!_eq(a, ZERO)) {
-			const r = _mod(b, a)
+		while (!eq(a, ZERO)) {
+			const r = mod(b, a)
 			b = a
 			a = r
 		}
