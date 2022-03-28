@@ -2,7 +2,11 @@ const { memoize } = require('@kmamal/util/function/memoize')
 
 
 const defineFor = memoize((D) => {
-	const { P_INFINITY, N_INFINITY, NAN } = D
+	const {
+		PInfinity: P_INFINITY,
+		NInfinity: N_INFINITY,
+		NaN: NAN,
+	} = D
 	const ZERO = D._fromNumber(0)
 	const ONE = D._fromNumber(1)
 	const MINUS_ONE = D._fromNumber(-1)
@@ -187,10 +191,16 @@ const defineFor = memoize((D) => {
 
 	const min = (a, b) => {
 		if (a === NAN || b === NAN) { return NAN }
+		if (a === N_INFINITY || b === N_INFINITY) { return N_INFINITY }
+		if (a === P_INFINITY) { return b }
+		if (b === P_INFINITY) { return a }
 	}
 
 	const max = (a, b) => {
 		if (a === NAN || b === NAN) { return NAN }
+		if (a === P_INFINITY || b === P_INFINITY) { return P_INFINITY }
+		if (a === N_INFINITY) { return b }
+		if (b === N_INFINITY) { return a }
 	}
 
 	const fromString = (s) => {

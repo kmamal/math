@@ -250,7 +250,7 @@ const _min = (a, b) => {
 const min = (a, b) => ec.min(a, b) ?? _min(a, b)
 
 const _maxTo = (dst, a, b) => {
-	const m = gte(a, b) ? a : b
+	const m = _gte(a, b) ? a : b
 	dst.num = m.num
 	dst.den = m.den
 }
