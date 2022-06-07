@@ -1,7 +1,8 @@
 const { map } = require('@kmamal/util/array/map')
 const { zipWith } = require('@kmamal/util/array/zip')
 
-const makeDimensionFinite = ({ from, to }) => ({
+const makeDimensionFinite = ({ type, from, to }) => ({
+	type,
 	from: Math.max(-Number.MAX_VALUE, from),
 	to: Math.min(Number.MAX_VALUE, to),
 })

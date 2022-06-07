@@ -12,10 +12,13 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@kmamal/util": "^0.0.57"
+    "@kmamal/util": "^0.0.86"
   },
   "devDependencies": {
-    "@kmamal/testing": "^0.0.11"
+    "@kmamal/chart": "^0.0.16",
+    "@kmamal/sdl": "^0.3.5",
+    "@kmamal/testing": "^0.0.20",
+    "canvas": "^2.9.1"
   },
   "exports": {
     "./linear-algebra/_matrix": "./src/linear-algebra/_matrix/index.js",

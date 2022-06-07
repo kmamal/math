@@ -1,7 +1,15 @@
 const { map } = require('@kmamal/util/array/map')
 
-const getDimensionMid = ({ from, to }) => (to / 2 - from / 2) + from
+const calcSafeMidpoint = (a, b) => (b / 2 - a / 2) + a
 
-const getMidpoint = (domain) => map(domain, getDimensionMid)
+const getDimensionMidpoint = ({ type, from, to }) => {
+	switch (type) {
+		case 'real': return calcSafeMidpoint(from, to)
+		case 'integer': return Math.floor(calcSafeMidpoint(from, to))
+		default: throw new Error("unknown type")
+	}
+}
+
+const getMidpoint = (domain) => map(domain, getDimensionMidpoint)
 
 module.exports = { getMidpoint }

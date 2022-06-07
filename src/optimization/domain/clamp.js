@@ -1,25 +1,34 @@
 const { clamp: clampNumber } = require('@kmamal/util/number/clamp')
-const { clone } = require('@kmamal/util/array/clone')
 
-const __clamp = (dst, src, domain) => {
-	for (let i = 0; i < domain.length; i++) {
-		const { from, to } = domain[i]
-		const x = src[i]
-		dst[i] = clampNumber(x, from, to)
+const dimensionClamp = ({ type, from, to }, x) => {
+	switch (type) {
+		case 'real': { return clampNumber(x, from, to) }
+		case 'integer': { return Math.floor(clampNumber(x, from, to)) }
+		default: throw new Error("unknown type")
 	}
 }
 
-const clamp$$$ = (variables, domain) => {
+const __clamp = (dst, src, domain) => {
+	for (let i = 0; i < domain.length; i++) {
+		dst[i] = dimensionClamp(domain[i], src[i])
+	}
+}
+
+const clamp$$$ = (domain, variables) => {
 	__clamp(variables, variables, domain)
 	return variables
 }
 
-const clamp = (variables, domain) => {
-	const res = clone(variables)
+const clamp = (domain, variables) => {
+	const res = new Array(domain.length)
 	__clamp(res, variables, domain)
 	return res
 }
 
 clamp.$$$ = clamp$$$
 
-module.exports = { clamp }
+module.exports = {
+	dimensionClamp,
+	__clamp,
+	clamp,
+}
