@@ -1,6 +1,7 @@
 const { getRandom } = require('./domain/get-random')
 const { getHalfRanges } = require('./domain/get-half-ranges')
 const { clamp } = require('./domain/clamp')
+const { minBy } = require('@kmamal/util/array/min')
 
 const { defineFor } = require('../linear-algebra/vector')
 const N = require('../domains/number')
@@ -41,24 +42,26 @@ const init = async (
 	}
 }
 
+const _getValue = (x) => x.value
+
 const iter = async (state) => {
 	const { func, domain, solution, value, vectors } = state
 
-	let bestCandidate
-	let bestCandidateValue = value
-	for (const vector of vectors) {
+	const candidatePoints = await Promise.all(vectors.map(async (vector) => {
 		const candidate = V.add(solution, vector)
 		clamp.$$$(domain, candidate)
 		const candidateValue = await func(...candidate)
-		if (candidateValue < bestCandidateValue) {
-			bestCandidate = candidate
-			bestCandidateValue = candidateValue
+		return {
+			solution: candidate,
+			value: candidateValue,
 		}
-	}
+	}))
 
-	if (bestCandidate) {
-		state.solution = bestCandidate
-		state.value = bestCandidateValue
+	const bestPoint = minBy(candidatePoints, _getValue)
+
+	if (bestPoint.value < value) {
+		state.solution = bestPoint.solution
+		state.value = bestPoint.value
 		state.countFailed = 0
 	} else {
 		state.countFailed++
