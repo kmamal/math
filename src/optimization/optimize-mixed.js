@@ -47,12 +47,15 @@ const iter = async (state) => {
 		return
 	}
 
-	if (value < state.initial.value) {
-		state.initial = point
+	if (value !== state.initial.value) {
+		if (value < state.initial.value) {
+			state.initial = point
+		}
+
 		// eslint-disable-next-line require-atomic-updates
 		state.patternSearch = await initPatternSearch(
 			state.problem,
-			{ initial: point },
+			{ initial: state.initial },
 		)
 		state.patternSearch.vectors.forEach((vector) => {
 			map.$$$(vector, (x, i) => domain[i].type === 'int' ? _round(x) : x)
