@@ -39,9 +39,10 @@ const iter = async (state) => {
 
 	if (value < state.initial.value) {
 		state.initial = point
-		state.patternSearch = initPatternSearch(
+		// eslint-disable-next-line require-atomic-updates
+		state.patternSearch = await initPatternSearch(
 			state.problem,
-			{ initial: { point } },
+			{ initial: point },
 		)
 		state.patternSearch.vectors.forEach((vector) => {
 			map.$$$(vector, (x) => Math.ceil(x))

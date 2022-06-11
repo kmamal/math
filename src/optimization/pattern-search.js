@@ -60,9 +60,11 @@ const iter = async (state) => {
 	const bestPoint = minBy(candidatePoints, _getValue)
 
 	if (bestPoint.value < value) {
+		/* eslint-disable require-atomic-updates */
 		state.solution = bestPoint.solution
 		state.value = bestPoint.value
 		state.countFailed = 0
+		/* eslint-enable require-atomic-updates */
 	} else {
 		state.countFailed++
 	}

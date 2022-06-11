@@ -29,7 +29,8 @@ const iter = async (state) => {
 
 	if (value < state.initial.value) {
 		state.initial = point
-		state.nelderMead = initNelderMead(state.problem, { initial: { point } })
+		// eslint-disable-next-line require-atomic-updates
+		state.nelderMead = await initNelderMead(state.problem, { initial: point })
 	}
 }
 
