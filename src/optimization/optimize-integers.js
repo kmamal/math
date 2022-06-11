@@ -7,6 +7,8 @@ const {
 	best: bestPatternSearch,
 } = require('./pattern-search')
 
+const _round = (x) => Math.sign(x) * Math.ceil(Math.abs(x))
+
 const init = (problem) => ({
 	problem,
 	initial: null,
@@ -17,11 +19,11 @@ const iter = async (state) => {
 		await iterPatternSearch(state.patternSearch)
 		if (state.patternSearch.countFailed) {
 			state.patternSearch.vectors.forEach((vector) => {
-				map.$$$(vector, (x) => Math.ceil(x / 2))
+				map.$$$(vector, (x) => _round(x / 2))
 			})
 		} else {
 			state.patternSearch.vectors.forEach((vector) => {
-				map.$$$(vector, (x) => Math.ceil(x * 1.5))
+				map.$$$(vector, (x) => _round(x * 1.5))
 			})
 		}
 		return
@@ -45,7 +47,7 @@ const iter = async (state) => {
 			{ initial: point },
 		)
 		state.patternSearch.vectors.forEach((vector) => {
-			map.$$$(vector, (x) => Math.ceil(x))
+			map.$$$(vector, (x) => _round(x))
 		})
 	}
 }
