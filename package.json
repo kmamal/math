@@ -16,9 +16,7 @@
     "@kmamal/testing": "^0.0.20"
   },
   "exports": {
-    "./_parabola": "./src/_parabola.js",
     "./fib": "./src/fib.js",
-    "./_logistic": "./src/_logistic.js",
     "./gcd": "./src/gcd.js"
   }
 }
