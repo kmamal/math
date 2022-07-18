@@ -1,6 +1,6 @@
 const { test } = require('@kmamal/testing')
 const { defineFor } = require('./gcd')
-const N = require('./domains/number')
+const N = require('@kmamal/numbers/js')
 const gcd = defineFor(N)
 
 test("gcd", (t) => {
