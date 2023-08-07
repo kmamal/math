@@ -1,5 +1,6 @@
+const { memoize } = require('@kmamal/util/function/memoize')
 
-const defineFor = (Domain) => {
+const defineFor = memoize((Domain) => {
 	const eq = Domain._eq ?? Domain.eq
 	const gt = Domain._gt ?? Domain.gt
 	const mod = Domain._mod ?? Domain.mod
@@ -27,6 +28,6 @@ const defineFor = (Domain) => {
 
 		return b
 	}
-}
+})
 
 module.exports = { defineFor }

@@ -1,5 +1,6 @@
+const { memoize } = require('@kmamal/util/function/memoize')
 
-const defineFor = (Domain) => {
+const defineFor = memoize((Domain) => {
 	const add = Domain._add ?? Domain.add
 	const sub = Domain._sub ?? Domain.sub
 	const toNumber = Domain._toNumber ?? Domain.toNumber
@@ -9,7 +10,7 @@ const defineFor = (Domain) => {
 
 	const fib = (n) => {
 		const i = toNumber(n)
-		if (cache.length > i) { return cache[i] }
+		if (i < cache.length) { return cache[i] }
 
 		const n1 = sub(n, ONE)
 		const n2 = sub(n1, ONE)
@@ -20,6 +21,6 @@ const defineFor = (Domain) => {
 	}
 
 	return fib
-}
+})
 
 module.exports = { defineFor }

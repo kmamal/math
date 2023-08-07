@@ -7,16 +7,20 @@
     "url": "git@github.com:kmamal/math.git"
   },
   "scripts": {
-    "test": "./scripts/run-tests.sh",
+    "test": "npx @kmamal/testing",
     "update-exports": "node ./scripts/update-exports.mjs"
   },
   "license": "MIT",
   "devDependencies": {
-    "@kmamal/numbers": "^0.0.1",
-    "@kmamal/testing": "^0.0.20"
+    "@kmamal/numbers": "^0.0.4",
+    "@kmamal/testing": "^0.0.24"
   },
   "exports": {
-    "./fib": "./src/fib.js",
-    "./gcd": "./src/gcd.js"
+    "./fibonacci": "./src/fibonacci.js",
+    "./gcd": "./src/gcd.js",
+    "./factorial": "./src/factorial.js"
+  },
+  "dependencies": {
+    "@kmamal/util": "^0.1.13"
   }
 }

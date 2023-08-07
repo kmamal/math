@@ -1,0 +1,17 @@
+const { test } = require('@kmamal/testing')
+const { defineFor } = require('./fibonacci')
+const N = require('@kmamal/numbers/js')
+const fib = defineFor(N)
+
+test("fibonacci", (t) => {
+	t.equal(fib(0), 1)
+	t.equal(fib(1), 1)
+	t.equal(fib(2), 2)
+	t.equal(fib(3), 3)
+	t.equal(fib(4), 5)
+	t.equal(fib(5), 8)
+	t.equal(fib(6), 13)
+	t.equal(fib(7), 21)
+	t.equal(fib(8), 34)
+	t.equal(fib(9), 55)
+})
