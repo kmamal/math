@@ -1,7 +1,6 @@
 const { test } = require('@kmamal/testing')
-const { defineFor } = require('./gcd')
 const N = require('@kmamal/numbers/js')
-const gcd = defineFor(N)
+const gcd = require('./gcd').defineFor(N)
 
 test("gcd", (t) => {
 	t.equal(gcd(1, 1), 1)

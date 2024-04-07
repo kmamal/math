@@ -8,19 +8,19 @@ const defineFor = memoize((Domain) => {
 
 	const cache = [ ONE, ONE ]
 
-	const fib = (n) => {
+	const fibonacci = (n) => {
 		const i = toNumber(n)
 		if (i < cache.length) { return cache[i] }
 
 		const n1 = sub(n, ONE)
 		const n2 = sub(n1, ONE)
-		const res = add(fib(n1), fib(n2))
+		const res = add(fibonacci(n1), fibonacci(n2))
 
 		cache[i] = res
 		return res
 	}
 
-	return fib
+	return { fibonacci }
 })
 
 module.exports = { defineFor }

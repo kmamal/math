@@ -4,7 +4,7 @@
   "description": "math",
   "repository": {
     "type": "git",
-    "url": "git@github.com:kmamal/math.git"
+    "url": "git+ssh://git@github.com:kmamal/math.git"
   },
   "scripts": {
     "test": "npx @kmamal/testing",

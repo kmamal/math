@@ -1,7 +1,6 @@
 const { test } = require('@kmamal/testing')
-const { defineFor } = require('./factorial')
 const N = require('@kmamal/numbers/js')
-const factorial = defineFor(N)
+const factorial = require('./factorial').defineFor(N)
 
 test("factorial", (t) => {
 	t.equal(factorial(0), 0)
