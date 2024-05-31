@@ -17,7 +17,9 @@
   },
   "exports": {
     "./fibonacci": "./src/fibonacci.js",
+    "./piecewise-constant": "./src/piecewise-constant.js",
     "./gcd": "./src/gcd.js",
+    "./piecewise-linear": "./src/piecewise-linear.js",
     "./factorial": "./src/factorial.js"
   },
   "dependencies": {

@@ -1,11 +1,11 @@
 const { memoize } = require('@kmamal/util/function/memoize')
 
-const defineFor = memoize((Domain) => {
-	const mul = Domain._mul ?? Domain.mul
-	const sub = Domain._sub ?? Domain.sub
-	const toNumber = Domain._toNumber ?? Domain.toNumber
-	const ZERO = Domain.fromNumber(0)
-	const ONE = Domain.fromNumber(1)
+const defineFor = memoize((Algebra) => {
+	const mul = Algebra._mul ?? Algebra.mul
+	const sub = Algebra._sub ?? Algebra.sub
+	const toNumber = Algebra._toNumber ?? Algebra.toNumber
+	const ZERO = Algebra.fromNumber(0)
+	const ONE = Algebra.fromNumber(1)
 
 	const cache = [ ZERO, ONE ]
 

@@ -1,10 +1,10 @@
 const { memoize } = require('@kmamal/util/function/memoize')
 
-const defineFor = memoize((Domain) => {
-	const eq = Domain._eq ?? Domain.eq
-	const gt = Domain._gt ?? Domain.gt
-	const mod = Domain._mod ?? Domain.mod
-	const ZERO = Domain.fromNumber(0)
+const defineFor = memoize((Algebra) => {
+	const eq = Algebra._eq ?? Algebra.eq
+	const gt = Algebra._gt ?? Algebra.gt
+	const mod = Algebra._mod ?? Algebra.mod
+	const ZERO = Algebra.fromNumber(0)
 
 	return (_a, _b) => {
 		let a = _a
